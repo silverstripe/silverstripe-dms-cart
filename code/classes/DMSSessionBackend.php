@@ -17,7 +17,6 @@ class DMSSessionBackend extends Object implements DMSCartBackendInterface
                 $items[$itemID] = unserialize($serialObj);
             }
         }
-
         return $items ? $items : array();
     }
 

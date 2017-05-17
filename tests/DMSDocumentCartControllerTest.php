@@ -38,10 +38,14 @@ class DMSDocumentCartControllerTest extends FunctionalTest
         $item2 = DMSRequestItem::create()->setDocument($doc2)->setQuantity(5);
         $this->cart->addItem($item1);
         $this->cart->addItem($item2);
-        $this->assertInstanceOf('ArrayList', $this->controller->Items(), 'DMSDocumentCartController->Items() returned an ArrayList');
+        $this->assertInstanceOf(
+            'ArrayList',
+            $this->controller->items(),
+            'DMSDocumentCartController->Items() returned an ArrayList'
+        );
         $this->assertCount(
             2,
-            $this->controller->Items(),
+            $this->controller->items(),
             'DMSDocumentCartController->Items()->count() returned the requisite number of items'
         );
     }
@@ -81,9 +85,18 @@ class DMSDocumentCartControllerTest extends FunctionalTest
         $request->setRouteParams(array('ID' => $doc1->ID));
         $this->controller->add($request);
 
+        // Test ajax
+        $request = new SS_HTTPRequest('POST', '', array(), array('quantity' => 7, 'ajax' => 1));
+        $request->setRouteParams(array('ID' => $doc1->ID));
+        $response = $this->controller->add($request);
+        $this->assertTrue($request->isAjax());
+        $this->assertJson($response, 'Confirmed that an ajax call to add() responded with json JSON');
+
         $item = $this->cart->getItem($doc1->ID);
-        $this->assertEquals(12, $item->getQuantity());
+        $this->assertEquals(19, $item->getQuantity());
     }
+
+
 
     public function testDeduct()
     {
@@ -108,11 +121,17 @@ class DMSDocumentCartControllerTest extends FunctionalTest
 
         $item = $this->cart->getItem($doc1->ID);
         $this->assertEquals(3, $item->getQuantity());
+
+        // Test ajax
+        $request = new SS_HTTPRequest('POST', '', array(), array('quantity' => 7, 'ajax' => 1));
+        $request->setRouteParams(array('ID' => $doc1->ID));
+        $response = $this->controller->deduct($request);
+        $this->assertTrue($request->isAjax());
+        $this->assertJson($response, 'Confirmed that an ajax call to deduct() method responded with JSON');
     }
 
     public function testRemove()
     {
-
         $doc1 = $this->objFromFixture('DMSDocument', 'doc1');
         // Check catty is initially empty
         $this->assertTrue($this->controller->getIsCartEmpty());
@@ -124,6 +143,13 @@ class DMSDocumentCartControllerTest extends FunctionalTest
         $this->assertFalse($this->controller->getIsCartEmpty());
         $this->controller->remove($request);
         $this->assertTrue($this->controller->getIsCartEmpty());
+
+        // Test ajax
+        $request = new SS_HTTPRequest('POST', '', array(), array('quantity' => 7, 'ajax' => 1));
+        $request->setRouteParams(array('ID' => $doc1->ID));
+        $response = $this->controller->remove($request);
+        $this->assertTrue($request->isAjax());
+        $this->assertJson($response, 'Confirmed that  an ajax call to remove() method responded with JSON');
     }
 
     public function testCart()

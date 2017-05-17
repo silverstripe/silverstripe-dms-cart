@@ -88,8 +88,7 @@ class DMSDocumentCartTest extends SapphireTest
         $this->assertTrue($this->cart->isCartEmpty());
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
         /** @var DMSRequestItem $item */
-        $item = DMSRequestItem::create();
-        $item->setDocument($doc)->setQuantity(2);
+        $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(2);
         $this->cart->addItem($item);
         $this->assertFalse($this->cart->isCartEmpty());
     }
@@ -147,5 +146,33 @@ class DMSDocumentCartTest extends SapphireTest
         // Test deduct all items that it removes it
         $this->cart->updateItemQuantity($doc->ID, -19);
         $this->assertTrue($this->cart->isCartEmpty());
+    }
+
+    public function testSaveSubmission()
+    {
+        $page = $this->objFromFixture('DMSDocumentCartCheckoutPage', 'page1');
+        /** @var DMSDocumentCartCheckoutPage_Controller $controller */
+        $controller = ModelAsController::controller_for($page);
+        // Form for use later
+        $form = $controller->DMSDocumentRequestForm();
+        $doc = $this->objFromFixture('DMSDocument', 'doc1');
+        // Add some an item to the cart to assert later that its empty
+        $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(15);
+        $controller->getCart()->addItem($item);
+
+        $submissionID = $controller->getCart()->saveSubmission($form);
+        $submission = DMSDocumentCartSubmission::get()->byID($submissionID);
+        $this->assertEquals(15, $submission->Items()->first()->Quantity);
+    }
+
+
+    public function testIsInCart()
+    {
+        $doc = $this->objFromFixture('DMSDocument', 'doc1');
+        /** @var DMSRequestItem $item */
+        $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(2);
+        $this->assertFalse($this->cart->isInCart($item->getItemId()));
+        $this->cart->addItem($item);
+        $this->assertTrue($this->cart->isInCart($item->getItemId()));
     }
 }
