@@ -3,7 +3,7 @@
   "description": "Adds a carting extension to the Document Management Module, enabling documents to be checked out and distributed accordingly.",
   "type": "silverstripe-module",
   "require": {
-    "silverstripe/dms": "~1.0"
+    "silverstripe/dms": "2.0.x-dev"
   },
   "license": "BSD-3-Clause",
   "extra": {
