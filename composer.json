@@ -1,0 +1,14 @@
+{
+  "name": "silverstripe/dms-cart",
+  "description": "Adds a carting extension to the Document Management Module, enabling documents to be checked out and distributed accordingly.",
+  "type": "silverstripe-module",
+  "require": {
+    "silverstripe/dms": "~1.0"
+  },
+  "license": "BSD-3-Clause",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  }
+}
