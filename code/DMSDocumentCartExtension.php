@@ -26,7 +26,7 @@ class DMSDocumentCartExtension extends DataExtension
         $fields->insertBefore(
             CheckboxField::create(
                 'AllowedInCart',
-                _t('DMSDocument.ALLOWED_IN_CART', 'Allowed in document cart')
+                _t('DMSDocumentCart.ALLOWED_IN_CART', 'Allowed in document cart')
             ),
             'Description'
         );

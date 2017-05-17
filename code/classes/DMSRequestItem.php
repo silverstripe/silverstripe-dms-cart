@@ -1,32 +1,38 @@
 <?php
 
 /**
- * Class RequestItem wrapper which represents a DocumentCartItem
+ * Class DMSRequestItem wrapper which represents a DocumentCartItem
  */
-class RequestItem extends ViewableData
+class DMSRequestItem extends ViewableData
 {
     /**
      * The number of copies required of @itemID
-     * @var Int
+     *
+     * @var int
      */
     private $quantity;
 
     /**
-     * The linked {@link DMSDocument}
+     * The linked {@link DMSDocument} which was added to the cart.
+     *
      * @var DMSDocument
      */
     private $document;
 
     /**
-     * @return Int
+     * Returns the ID of the $this->document
+     *
+     * @return int
      */
-    public function getItemID()
+    public function getItemId()
     {
         return $this->document->ID;
     }
 
     /**
-     * @return Int
+     * Returns the linked item Quantity
+     *
+     * @return int
      */
     public function getQuantity()
     {
@@ -34,9 +40,11 @@ class RequestItem extends ViewableData
     }
 
     /**
-     * @param Int $quantity
+     * Sets the quantity of documents to be ordered.
      *
-     * @return RequestItem
+     * @param int $quantity
+     *
+     * @return DMSRequestItem
      */
     public function setQuantity($quantity)
     {
@@ -46,6 +54,8 @@ class RequestItem extends ViewableData
     }
 
     /**
+     * Returns the linked DMSDocument
+     *
      * @return DMSDocument
      */
     public function getDocument()
@@ -56,7 +66,7 @@ class RequestItem extends ViewableData
     /**
      * @param DMSDocument $document
      *
-     * @return RequestItem
+     * @return DMSRequestItem
      */
     public function setDocument($document)
     {
