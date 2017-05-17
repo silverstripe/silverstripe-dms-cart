@@ -2,7 +2,7 @@
 
 ## Overview
 
-The module adds a new `DocumentCart` model which allows for the request of physical copies of documents from a
+The module adds a new `DMSDocumentCart` model which allows for the request of physical copies of documents from a
 Document Management Module to be printed and/or downloaded.
 
 

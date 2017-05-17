@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class RequestItem wrapper which represents a DocumentCartItem
+ * Class DMSRequestItem wrapper which represents a DocumentCartItem
  */
-class RequestItem extends ViewableData
+class DMSRequestItem extends ViewableData
 {
     /**
      * The number of copies required of @itemID
@@ -36,7 +36,7 @@ class RequestItem extends ViewableData
     /**
      * @param Int $quantity
      *
-     * @return RequestItem
+     * @return DMSRequestItem
      */
     public function setQuantity($quantity)
     {
@@ -56,7 +56,7 @@ class RequestItem extends ViewableData
     /**
      * @param DMSDocument $document
      *
-     * @return RequestItem
+     * @return DMSRequestItem
      */
     public function setDocument($document)
     {

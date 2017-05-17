@@ -1,22 +1,22 @@
 <?php
 
 /**
- * Class DocumentCart represents the shopping cart.
+ * Class DMSDocumentCart represents the shopping cart.
  *
  */
-class DocumentCart extends Object
+class DMSDocumentCart extends Object
 {
 
     /**
-     * A handle to the classes' {@link CartBackendInterface}
-     * @var CartBackendInterface
+     * A handle to the classes' {@link DMSCartBackendInterface}
+     * @var DMSCartBackendInterface
      */
     protected $backend;
 
     /**
-     * DocumentCart constructor.
+     * DMSDocumentCart constructor.
      *
-     * @param CartBackendInterface|null $backend
+     * @param DMSCartBackendInterface|null $backend
      */
     public function __construct($backend = null)
     {
@@ -35,19 +35,19 @@ class DocumentCart extends Object
     /**
      * @see DMSSessionBackend::addItem()
      *
-     * @param RequestItem $item
+     * @param DMSRequestItem $item
      */
-    public function addItem(RequestItem $item)
+    public function addItem(DMSRequestItem $item)
     {
         $this->backend->addItem($item);
     }
 
     /**
-     * Get a {@link RequestItem} object from the cart.
+     * Get a {@link DMSRequestItem} object from the cart.
      *
      * @param int $itemID The ID of the item
      *
-     * @return RequestItem|boolean
+     * @return DMSRequestItem|boolean
      */
     public function getItem($itemID)
     {
@@ -57,9 +57,9 @@ class DocumentCart extends Object
     /**
      * @see DMSSessionBackend::removeItem()
      *
-     * @param RequestItem $item
+     * @param DMSRequestItem $item
      */
-    public function removeItem(RequestItem $item)
+    public function removeItem(DMSRequestItem $item)
     {
         $this->backend->removeItem($item);
     }
@@ -75,11 +75,11 @@ class DocumentCart extends Object
     }
 
     /**
-     * Increment the quantity of an {@link RequestItem}
+     * Increment the quantity of an {@link DMSRequestItem}
      * object that already exists in the cart, replacing
      * the existing object with an updated one.
      *
-     * @param object|int $itemID   The document ID or RequestItem object
+     * @param object|int $itemID   The document ID or DMSRequestItem object
      * @param int        $quantity The quantity to increment by
      *
      * @return boolean TRUE successfully incremented | FALSE item not found
@@ -110,12 +110,12 @@ class DocumentCart extends Object
     }
 
     /**
-     * Decrement the quantity of an {@link RequestItem}
+     * Decrement the quantity of an {@link DMSRequestItem}
      * object that exists in the cart, replacing the
      * existing object with an updated one. If the quantity
      * falls below 1, the item is removed completely.
      *
-     * @param object|int $itemID   The document ID or RequestItem object
+     * @param object|int $itemID   The document ID or DMSRequestItem object
      * @param int        $quantity The quantity to decrement by
      *
      * @return boolean TRUE successfully deducted | FALSE item not found
@@ -195,7 +195,7 @@ class DocumentCart extends Object
     }
 
     /**
-     * @return CartBackendInterface|static
+     * @return DMSCartBackendInterface
      */
     public function getBackend()
     {

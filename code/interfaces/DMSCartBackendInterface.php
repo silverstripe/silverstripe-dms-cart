@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Interface CartBackendInterface represents the contract for a Session Backend
+ * Interface DMSCartBackendInterface represents the contract for a Session Backend
  */
-interface CartBackendInterface
+interface DMSCartBackendInterface
 {
     /**
-     * Get all the {@link RequestItem} objects
+     * Get all the {@link DMSRequestItem} objects
      * serialized in the cart.
      *
      * @return array
@@ -18,34 +18,34 @@ interface CartBackendInterface
      *
      * @param int $id
      *
-     * @return RequestItem|boolean
+     * @return DMSRequestItem|boolean
      */
     public function getItem($id);
 
     /**
-     * Add an {@link RequestItem} object into the cart.
+     * Add an {@link DMSRequestItem} object into the cart.
      *
-     * @param RequestItem $item
+     * @param DMSRequestItem $item
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
-    public function addItem(RequestItem $item);
+    public function addItem(DMSRequestItem $item);
 
     /**
-     * Remove a {@link RequestItem} object from the cart.
+     * Remove a {@link DMSRequestItem} object from the cart.
      *
-     * @param RequestItem $item
+     * @param DMSRequestItem $item
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
-    public function removeItem(RequestItem $item);
+    public function removeItem(DMSRequestItem $item);
 
     /**
-     * Removes a {@link RequestItem} from the cart by it's id
+     * Removes a {@link DMSRequestItem} from the cart by it's id
      *
      * @param int $itemID
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      *
      */
     public function removeItemByID($itemID);
@@ -53,7 +53,7 @@ interface CartBackendInterface
     /**
      * Flushes the cart
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
     public function emptyCart();
 
@@ -62,7 +62,7 @@ interface CartBackendInterface
      *
      * @param $backURL
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
     public function setBackUrl($backURL);
 
@@ -76,11 +76,11 @@ interface CartBackendInterface
     /**
      * Sets the recipients information
      *
-     * @param $receiverInfo
+     * @param array $receiverInfo
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
-    public function setReceiverInfo($receiverInfo);
+    public function setReceiverInfo(array $receiverInfo = array());
 
     /**
      * Retrieves the recipients info

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class DMSSessionBackend represents a session based DocumentCart backend
+ * Class DMSSessionBackend represents a session based DMSDocumentCart backend
  */
-class DMSSessionBackend extends Object implements CartBackendInterface
+class DMSSessionBackend extends Object implements DMSCartBackendInterface
 {
 
     /**
@@ -11,7 +11,7 @@ class DMSSessionBackend extends Object implements CartBackendInterface
      */
     public function getItems()
     {
-        $items = Session::get('DocumentCart.Items');
+        $items = Session::get('DMSDocumentCart.Items');
         if ($items && is_array($items)) {
             foreach ($items as $itemID => $serialObj) {
                 if ($serialObj == null) {
@@ -26,32 +26,32 @@ class DMSSessionBackend extends Object implements CartBackendInterface
     }
 
     /**
-     * @param RequestItem $item
+     * @param DMSRequestItem $item
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
-    public function addItem(RequestItem $item)
+    public function addItem(DMSRequestItem $item)
     {
-        Session::set("DocumentCart.Items.{$item->getItemID()}", serialize($item));
+        Session::set("DMSDocumentCart.Items.{$item->getItemID()}", serialize($item));
 
         return $this;
     }
 
     /**
-     * @param int|RequestItem $item
+     * @param int|DMSRequestItem $item
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
-    public function removeItem(RequestItem $item)
+    public function removeItem(DMSRequestItem $item)
     {
-        Session::clear("DocumentCart.Items.{$item->getItemID()}");
+        Session::clear("DMSDocumentCart.Items.{$item->getItemID()}");
 
         return $this;
     }
 
     public function emptyCart()
     {
-        Session::clear('DocumentCart');
+        Session::clear('DMSDocumentCart');
 
         return $this;
     }
@@ -59,11 +59,11 @@ class DMSSessionBackend extends Object implements CartBackendInterface
     /**
      * @param $backURL
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
     public function setBackUrl($backURL)
     {
-        Session::set("DocumentCart.BackURL", $backURL);
+        Session::set("DMSDocumentCart.BackURL", $backURL);
 
         return $this;
     }
@@ -73,17 +73,17 @@ class DMSSessionBackend extends Object implements CartBackendInterface
      */
     public function getBackURL()
     {
-        return Session::get("DocumentCart.BackURL");
+        return Session::get("DMSDocumentCart.BackURL");
     }
 
     /**
      * @param array $receiverInfo
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
-    public function setReceiverInfo($receiverInfo)
+    public function setReceiverInfo(array $receiverInfo = array())
     {
-        Session::set("DocumentCart.ReceiverInfo", serialize($receiverInfo));
+        Session::set("DMSDocumentCart.ReceiverInfo", serialize($receiverInfo));
 
         return $this;
     }
@@ -93,7 +93,7 @@ class DMSSessionBackend extends Object implements CartBackendInterface
      */
     public function getReceiverInfo()
     {
-        return unserialize(Session::get("DocumentCart.ReceiverInfo"));
+        return unserialize(Session::get("DMSDocumentCart.ReceiverInfo"));
     }
 
     /**
@@ -101,7 +101,7 @@ class DMSSessionBackend extends Object implements CartBackendInterface
      *
      * @param int $id
      *
-     * @return RequestItem
+     * @return DMSRequestItem
      */
     public function getItem($id)
     {
@@ -117,15 +117,15 @@ class DMSSessionBackend extends Object implements CartBackendInterface
 
 
     /**
-     * Removes a {@link RequestItem} from the cart by it's id
+     * Removes a {@link DMSRequestItem} from the cart by it's id
      *
      * @param int $itemID
      *
-     * @return CartBackendInterface
+     * @return DMSCartBackendInterface
      */
     public function removeItemByID($itemID)
     {
-        Session::clear("DocumentCart.Items.{$itemID}");
+        Session::clear("DMSDocumentCart.Items.{$itemID}");
 
         return $this;
     }
