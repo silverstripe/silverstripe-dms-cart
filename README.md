@@ -1,5 +1,7 @@
 # Document Cart Module
 
+[![Build Status](https://travis-ci.org/creative-commoners/silverstripe-dms-cart.svg?branch=master)](https://travis-ci.org/creative-commoners/silverstripe-dms-cart) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/creative-commoners/silverstripe-dms-cart/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/creative-commoners/silverstripe-dms-cart/?branch=master) [![codecov](https://codecov.io/gh/creative-commoners/silverstripe-dms-cart/branch/master/graph/badge.svg)](https://codecov.io/gh/creative-commoners/silverstripe-dms-cart)
+
 ## Overview
 
 The module adds a new `DMSDocumentCart` model which allows for the request of physical copies of documents from a
@@ -16,7 +18,7 @@ For information on configuring and using this module, please see [the documentat
 
 ## Requirements
 
- * [SilverStripe Document Management Module](https://github.com/silverstripe/silverstripe-dms) module ~1.0 
+ * [silverstripe/dms](https://github.com/silverstripe/silverstripe-dms) ~2.0 
 
 ## Contributing
 
