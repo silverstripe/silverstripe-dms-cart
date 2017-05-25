@@ -1,0 +1,8 @@
+en:
+  DMSDocumentCart:
+    ALLOWED_IN_CART: Allowed in document cart
+    MAXIMUM_CART_QUANTITY: Maximum cart quantity
+    MAXIMUM_CART_QUANTITY_HELP: If set, this will enforce a maximum number of this item that can be ordered per cart
+  DMSDocumentCartController:
+    ERROR_NOT_ALLOWED: You are not allowed to add this document
+    ERROR_QUANTITY_EXCEEDED: You can't add {quantity} of this document

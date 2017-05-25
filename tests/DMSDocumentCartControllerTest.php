@@ -158,4 +158,25 @@ class DMSDocumentCartControllerTest extends FunctionalTest
         //For good measure assert it's empty
         $this->assertTrue($this->controller->getIsCartEmpty());
     }
+
+    /**
+     * Ensure that a validation error is shown when requesting to add more of a document that is allowed
+     */
+    public function testCannotAddMoreThanSuggestedQuantityOfItem()
+    {
+        $document = $this->objFromFixture('DMSDocument', 'limited_supply');
+        $result = $this->get('/documentcart/add/' . $document->ID . '?quantity=5&ajax=1');
+        $this->assertContains('You can\'t add 5 of this document', (string) $result->getBody());
+    }
+
+    /**
+     * Ensure that when a document that cannot be added to the cart is added to the cart, a validation error is
+     * returned
+     */
+    public function testValidationErrorReturnedOnInvalidAdd()
+    {
+        $document = $this->objFromFixture('DMSDocument', 'not_allowed_in_cart');
+        $result = $this->get('/documentcart/add/' . $document->ID . '?ajax=1');
+        $this->assertContains('You are not allowed to add this document', (string) $result->getBody());
+    }
 }
