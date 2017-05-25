@@ -232,6 +232,8 @@ class DMSDocumentCart extends ViewableData
             );
             $submissionItem = DMSDocumentCartSubmissionItem::create($values);
             $submission->Items()->add($submissionItem);
+
+            $row->getDocument()->incrementPrintRequest();
         });
 
         return $return;

@@ -149,7 +149,6 @@ class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
         $this->updateCartItems($data);
         $this->updateCartReceiverInfo($data);
         $this->send();
-        $this->trackTimestampedPrintRequest();
         $this->getCart()->saveSubmission($form);
         $this->getCart()->emptyCart();
 
@@ -170,17 +169,6 @@ class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
                 )
             )
         );
-    }
-
-    /**
-     * Increments the print counts of all documents which were successfully sent.
-     */
-    public function trackTimestampedPrintRequest()
-    {
-        /** @var DMSRequestItem $item */
-        foreach ($this->getCart()->getItems() as $item) {
-            $item->getDocument()->incrementPrintRequest();
-        }
     }
 
     /**

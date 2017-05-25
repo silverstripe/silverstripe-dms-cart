@@ -51,20 +51,6 @@ class DMSDocumentCartCheckoutPageTest extends FunctionalTest
     }
 
     /**
-     * Tests if print requests are incremented
-     */
-    public function testTrackTimestampedPrintRequest()
-    {
-        $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
-        $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(2);
-        $this->cart->addItem($item);
-
-        $this->controller->trackTimestampedPrintRequest();
-        $this->assertEquals(1, $item->getDocument()->PrintRequestCount);
-    }
-
-    /**
      * Tests if a Cart is received
      */
     public function testGetCart()
