@@ -1,8 +1,3 @@
-.dms-cart-actions .hidden {
-    display: none;
-    visibility: hidden;
-}
-
-.dms-cart-actions .dms-bullet-item:before {
-    content: "• "
+.dms-cart-actions .dms-cart-actions-viewcartlink:before {
+  content: "• "
 }

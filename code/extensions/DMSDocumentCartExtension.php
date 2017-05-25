@@ -16,9 +16,10 @@ class DMSDocumentCartExtension extends DataExtension
     private $cartController;
 
     private static $db = array(
-        'AllowedInCart'     => 'Boolean',
+        'AllowedInCart'       => 'Boolean',
+        'MaximumCartQuantity' => 'Int',
         // Running total of print requests on this document
-        'PrintRequestCount' => 'Int',
+        'PrintRequestCount'   => 'Int',
     );
 
     /**
@@ -33,13 +34,27 @@ class DMSDocumentCartExtension extends DataExtension
 
     public function updateCMSFields(FieldList $fields)
     {
-        $fields->insertBefore(
-            'Description',
+        Requirements::javascript(DMS_CART_DIR . '/javascript/dmscart.js');
+
+        $newFields = array(
             CheckboxField::create(
                 'AllowedInCart',
                 _t('DMSDocumentCart.ALLOWED_IN_CART', 'Allowed in document cart')
-            )
+            )->addExtraClass('dms-allowed-in-cart'),
+            TextField::create(
+                'MaximumCartQuantity',
+                _t('DMSDocumentCart.MAXIMUM_CART_QUANTITY', 'Maximum cart quantity')
+            )->setRightTitle(
+                _t(
+                    'DMSDocumentCart.MAXIMUM_CART_QUANTITY_HELP',
+                    'If set, this will enforce a maximum number of this item that can be ordered per cart'
+                )
+            )->addExtraClass('dms-maximum-cart-quantity hide')
         );
+
+        foreach ($newFields as $field) {
+            $fields->insertBefore($field, 'Description');
+        }
     }
 
     /**
@@ -63,6 +78,26 @@ class DMSDocumentCartExtension extends DataExtension
     public function isInCart()
     {
         return (bool) $this->getCart()->isInCart($this->owner->ID);
+    }
+
+    /**
+     * Returns whether the current document has a limit on how many items can be added to a single cart
+     *
+     * @return bool
+     */
+    public function getHasQuantityLimit()
+    {
+        return $this->owner->getMaximumQuantity() > 0;
+    }
+
+    /**
+     * Get the maximum quantity of this document that can be ordered in a single cart
+     *
+     * @return int
+     */
+    public function getMaximumQuantity()
+    {
+        return (int) $this->owner->MaximumCartQuantity;
     }
 
     /**
@@ -113,5 +148,19 @@ class DMSDocumentCartExtension extends DataExtension
     public function getCart()
     {
         return $this->getCartController()->getCart();
+    }
+
+    /**
+     * Returns any validation messages that may have been in the session and clears them
+     *
+     * @return false
+     */
+    public function getValidationResult()
+    {
+        if ($result = Session::get('dms-cart-validation-message')) {
+            Session::clear('dms-cart-validation-message');
+            return $result;
+        }
+        return false;
     }
 }

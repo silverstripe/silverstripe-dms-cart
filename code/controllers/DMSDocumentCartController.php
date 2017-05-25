@@ -70,8 +70,13 @@ class DMSDocumentCartController extends Controller
     {
         $quantity = ($request->requestVar('quantity')) ? intval($request->requestVar('quantity')) : 1;
         $documentId = (int)$request->param('ID');
+        $result = true;
+        $message = '';
+
         if ($doc = DMSDocument::get()->byID($documentId)) {
-            if ($doc->isAllowedInCart() && $doc->canView()) {
+            /** @var ValidationResult $validate */
+            $validate = $this->validateAddRequest($quantity, $doc);
+            if ($validate->valid()) {
                 if ($this->getCart()->getItem($documentId)) {
                     $this->getCart()->updateItemQuantity($documentId, $quantity);
                 } else {
@@ -83,13 +88,19 @@ class DMSDocumentCartController extends Controller
                 if (isset($backURL) && preg_match('/^\//', $backURL)) {
                     $this->getCart()->setBackUrl($backURL);
                 }
+            } else {
+                $message = $validate->starredList();
+                $result = false;
             }
         }
 
         if ($request->isAjax()) {
             $this->response->addHeader('Content-Type', 'application/json');
+            return Convert::raw2json(array('result' => $result, 'message' => $message));
+        }
 
-            return Convert::raw2json(array('result' => true));
+        if (!$result) {
+            Session::set('dms-cart-validation-message', $message);
         }
 
         if ($backURL = $request->getVar('BackURL')) {
@@ -152,5 +163,33 @@ class DMSDocumentCartController extends Controller
     public function getCart()
     {
         return singleton('DMSDocumentCart');
+    }
+
+    /**
+     * Validates a request to add a document to the cart
+     *
+     * @param  int $quantity
+     * @param  DMSDocument $document
+     * @return ValidationResult
+     */
+    protected function validateAddRequest($quantity, DMSDocument $document)
+    {
+        $result = ValidationResult::create();
+
+        if (!$document->isAllowedInCart()) {
+            $result->error(_t(__CLASS__ . '.ERROR_NOT_ALLOWED', 'You are not allowed to add this document'));
+        }
+
+        if ($document->getHasQuantityLimit() && $quantity > $document->getMaximumQuantity()) {
+            $result->error(_t(
+                __CLASS__ . '.ERROR_QUANTITY_EXCEEDED',
+                'You can\'t add {quantity} of this document',
+                array('quantity' => $quantity)
+            ));
+        }
+
+        $this->extend('updateValidateAddRequest', $result, $quantity, $document);
+
+        return $result;
     }
 }

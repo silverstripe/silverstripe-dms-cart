@@ -11,6 +11,15 @@ DMSDocument:
   doc2:
     Filename: Doc2
     Title: Doc2
+  limited_supply:
+    Filename: Doc3
+    Title: Doc3
+    AllowedInCart: 1
+    MaximumCartQuantity: 3
+  not_allowed_in_cart:
+    Filename: Doc4
+    Title: Doc4
+    AllowedInCart: 0
 DMSDocumentCartCheckoutPage:
   page1:
     ThanksMessage: Thank you for your submission
