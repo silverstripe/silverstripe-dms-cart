@@ -60,7 +60,7 @@ class DMSRequestItem extends ViewableData
      */
     public function getDocument()
     {
-        return $this->document;
+        return DMSDocument::get()->byID($this->document->ID);
     }
 
     /**

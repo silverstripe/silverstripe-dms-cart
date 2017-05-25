@@ -1,3 +1,8 @@
+Member:
+  joe:
+    FirstName: joe
+    Surname: soap
+    Email: joe@example.com
 DMSDocument:
   doc1:
     Filename: Doc1
@@ -6,3 +11,7 @@ DMSDocument:
   doc2:
     Filename: Doc2
     Title: Doc2
+DMSDocumentCartCheckoutPage:
+  page1:
+    ThanksMessage: Thank you for your submission
+    CartEmailRecipient: =>Member.joe

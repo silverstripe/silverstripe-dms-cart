@@ -3,7 +3,7 @@
  * Class DMSDocumentCart represents the shopping cart.
  *
  */
-class DMSDocumentCart extends Object
+class DMSDocumentCart extends ViewableData
 {
     /**
      * A handle to the classes' {@link DMSCartBackendInterface}
@@ -21,11 +21,11 @@ class DMSDocumentCart extends Object
     /**
      * Returns all the cart items as an array
      *
-     * @return array
+     * @return ArrayList
      */
     public function getItems()
     {
-        return $this->backend->getItems();
+        return ArrayList::create($this->backend->getItems());
     }
 
     /**
@@ -121,7 +121,8 @@ class DMSDocumentCart extends Object
     }
 
     /**
-     * Checks if a cart is empty
+     * Checks if a cart is empty.
+     * Returns true if cart is empty, false otherwise.
      *
      * @return boolean
      */
@@ -129,7 +130,7 @@ class DMSDocumentCart extends Object
     {
         $items = $this->getItems();
 
-        return empty($items);
+        return !$items->exists();
     }
 
     /**
@@ -181,6 +182,16 @@ class DMSDocumentCart extends Object
     }
 
     /**
+     * Returns the recipients in a Viewable format
+     *
+     * @return ArrayData|bool
+     */
+    public function getReceiverInfoNice()
+    {
+        return (is_array($this->getReceiverInfo())) ? ArrayData::create($this->getReceiverInfo()) : false;
+    }
+
+    /**
      * Gets the backend handler
      *
      * @return DMSSessionBackend
@@ -188,5 +199,41 @@ class DMSDocumentCart extends Object
     public function getBackend()
     {
         return $this->backend;
+    }
+
+    /**
+     * Checks if an item exists within a cart. Returns true (if exists) or false.
+     *
+     * @param int $itemID
+     *
+     * @return bool
+     */
+    public function isInCart($itemID)
+    {
+        return (bool) $this->getItem($itemID);
+    }
+
+    /**
+     * Persists a cart submission to the database
+     *
+     * @param Form $form
+     *
+     * @return int
+     */
+    public function saveSubmission(Form $form)
+    {
+        $submission = DMSDocumentCartSubmission::create();
+        $form->saveInto($submission);
+        $return = $submission->write();
+        $this->getItems()->each(function ($row) use ($submission) {
+            $values = array(
+                'Quantity' => $row->getQuantity(),
+                'DocumentID' => $row->getDocument()->ID,
+            );
+            $submissionItem = DMSDocumentCartSubmissionItem::create($values);
+            $submission->Items()->add($submissionItem);
+        });
+
+        return $return;
     }
 }

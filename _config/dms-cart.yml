@@ -1,3 +1,14 @@
+---
+Name: dms-cart
+After: framework/routes#coreroutes
+---
+Director:
+  rules:
+    'documentcart': 'DMSDocumentCartController'
+
 DMSDocument:
   extensions:
     - DMSDocumentCartExtension
+
+DMSDocumentCartCheckoutPage:
+  documents_enabled: false

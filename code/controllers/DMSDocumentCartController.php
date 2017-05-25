@@ -18,9 +18,9 @@ class DMSDocumentCartController extends Controller
      *
      * @return ArrayList
      */
-    public function Items()
+    public function items()
     {
-        return ArrayList::create($this->getCart()->getItems());
+        return $this->getCart()->getItems();
     }
 
     /**
@@ -93,16 +93,18 @@ class DMSDocumentCartController extends Controller
         }
 
         if ($backURL = $request->getVar('BackURL')) {
-            $this->redirect($backURL);
-        } else {
-            $this->redirectBack();
+            return $this->redirect($backURL);
         }
+
+        return $this->redirectBack();
     }
 
     /**
      * Deduct quantity from an item that exists in {@link DMSDocumentCart}
      *
      * @param SS_HTTPRequest $request
+     *
+     * @return SS_HTTPResponse|string
      */
     public function deduct(SS_HTTPRequest $request)
     {
@@ -116,14 +118,18 @@ class DMSDocumentCartController extends Controller
             return Convert::raw2json(array('result' => true));
         }
         if ($backURL = $request->getVar('BackURL')) {
-            $this->redirect($backURL);
-        } else {
-            $this->redirectBack();
+            return $this->redirect($backURL);
         }
+
+        return $this->redirectBack();
     }
 
     /**
      * Completely remove an item that exists in {@link DMSDocumentCart}
+     *
+     * @param SS_HTTPRequest $request
+     *
+     * @return string
      */
     public function remove(SS_HTTPRequest $request)
     {
@@ -133,9 +139,9 @@ class DMSDocumentCartController extends Controller
             $this->response->addHeader('Content-Type', 'application/json');
 
             return Convert::raw2json(array('result' => !$this->getIsCartEmpty()));
-        } else {
-            $this->redirectBack();
         }
+
+        return $this->redirectBack();
     }
 
     /**
