@@ -1,6 +1,5 @@
 <% if $isAllowedInCart %>
     <% require css('dms-cart/css/dms-cart.css') %>
-
     <div class="dms-cart-actions">
         <p>
             <a class="<% if not $isInCart %>hidden<% end_if %>"

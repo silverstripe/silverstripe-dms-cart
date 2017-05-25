@@ -28,7 +28,7 @@ class DMSDocumentCartExtension extends DataExtension
      */
     public function isAllowedInCart()
     {
-        return $this->owner->AllowedInCart;
+        return ($this->owner->AllowedInCart && $this->owner->canView());
     }
 
     public function updateCMSFields(FieldList $fields)
