@@ -21,7 +21,15 @@
                         <% loop $Items %>
                         <tr>
                             <% with $Document %>
-                                <td>$ID</td>
+                                <td>
+                                    <div class="checkout-page-thumbnail">
+                                        <% if $CoverImage %>
+                                            <img class="thumbnail" src="$CoverImage.FitMax(32,32).Link"/>
+                                        <% else %>
+                                            <img class="thumbnail" src="$Icon($Extension)"/>
+                                        <% end_if %>
+                                    </div>
+                                </td>
                                 <td>$Title</td>
                                 <td>
                                     <label for="ItemQuantity[{$ID}]" class="visuallyhidden"><%t DMSDocumentCartCheckoutPage.ITEM_QUANTITY "Item Quantity" %></label>

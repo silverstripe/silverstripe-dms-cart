@@ -22,6 +22,13 @@ class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
         'DeliveryAddressPostCode' => '',
     );
 
+    public function init()
+    {
+        parent::init();
+
+        Requirements::css(DMS_CART_DIR.'/css/dms-cart.css');
+    }
+
     /**
      * Gets and displays an editable list of items within the cart, as well as a contact form with entry
      * fields for the recipients information.
