@@ -1,3 +1,9 @@
 .dms-cart-actions .dms-cart-actions-viewcartlink:before {
   content: "• "
 }
+
+.checkout-page-thumbnail .thumbnail {
+  width: 32px;
+  border: none;
+  vertical-align: middle;
+}
