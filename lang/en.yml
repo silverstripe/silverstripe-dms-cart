@@ -1,8 +1,20 @@
 en:
   DMSDocumentCart:
     ALLOWED_IN_CART: Allowed in document cart
+    CONTINUE_BROWSING: Continue browsing
+    ITEM_QUANTITY: Item Quantity
     MAXIMUM_CART_QUANTITY: Maximum cart quantity
     MAXIMUM_CART_QUANTITY_HELP: If set, this will enforce a maximum number of this item that can be ordered per cart
+    REQUEST_FORM_HEADING: Your request in summary
+    REQUESTED_ITEMS: Requested documents
   DMSDocumentCartController:
     ERROR_NOT_ALLOWED: You are not allowed to add this document
     ERROR_QUANTITY_EXCEEDED: You can't add {quantity} of this document
+  DMSCheckoutController:
+    CHECKOUT_TITLE: Checkout
+    COMPLETE_THANKS: Thanks!
+    COMPLETE_MESSAGE: Thank you. You will receive a confirmation email shortly.
+    EMAIL_BODY: 'A request for printed publications has been submitted with the following details:'
+    EMAIL_SUBJECT: Request for Printed Publications
+    RECEIVER_COUNTRY: Country
+    SEND_ACTION: Send your request

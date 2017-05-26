@@ -20,6 +20,19 @@ class DMSRequestItem extends ViewableData
     private $document;
 
     /**
+     * If a document is provided on construction, set it to this item instance
+     *
+     * @param DMSDocument $document
+     */
+    public function __construct($document = null)
+    {
+        if ($document instanceof DMSDocument) {
+            $this->setDocument($document);
+        }
+        parent::__construct();
+    }
+
+    /**
      * Returns the ID of the $this->document
      *
      * @return int
@@ -60,7 +73,9 @@ class DMSRequestItem extends ViewableData
      */
     public function getDocument()
     {
-        return DMSDocument::get()->byID($this->document->ID);
+        if ($this->document) {
+            return DMSDocument::get()->byID($this->document->ID);
+        }
     }
 
     /**

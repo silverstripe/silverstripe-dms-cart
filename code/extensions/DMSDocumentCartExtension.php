@@ -117,10 +117,10 @@ class DMSDocumentCartExtension extends DataExtension
             throw new InvalidArgumentException("{$action} is not accepted for this method.");
         }
 
-        if ($action !== 'checkout') {
-            $result = Controller::join_links('documentcart', $action, $this->owner->ID);
+        if ($action === 'checkout') {
+            $result = DMSCheckoutController::singleton()->Link();
         } else {
-            $result = SiteTree::get_one('DMSDocumentCartCheckoutPage')->Link();
+            $result = Controller::join_links('documentcart', $action, $this->owner->ID);
         }
 
         return $result;
