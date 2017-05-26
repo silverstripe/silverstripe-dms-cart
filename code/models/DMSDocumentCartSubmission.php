@@ -15,4 +15,34 @@ class DMSDocumentCartSubmission extends DataObject
     private static $has_many = array(
         'Items' => 'DMSDocumentCartSubmissionItem',
     );
+
+    private static $summary_fields = array(
+        'ReceiverName' => 'Receiver Name',
+        'ReceiverPhone' => 'Receiver Phone',
+        'ReceiverEmail' => 'Receiver Email',
+        'Items.Count' => 'No. Items'
+    );
+
+    private static $singular_name = 'Cart Submission';
+    private static $plural_name = 'Cart Submissions';
+
+    /**
+     * Removing the add and existing GridField components to ensure that the model admin for submissions doesn't
+     * let you add new records
+     *
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
+
+        $gridField = GridField::create('Items', null, $this->Items(), $config = new GridFieldConfig_RecordEditor);
+        $fields->addFieldToTab('Root.Items', $gridField);
+
+        foreach (array('GridFieldAddExistingAutocompleter', 'GridFieldAddNewButton') as $component) {
+            $config->removeComponentsByType($component);
+        }
+
+        return $fields;
+    }
 }
