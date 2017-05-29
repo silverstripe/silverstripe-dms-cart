@@ -4,8 +4,6 @@
 
 * [Configuration](configuration.md)
 * [Use in templates](use-in-templates.md)
-
-## CMS user help
-
-* TBC
+* [Change backend provider](change-backend-provider.md)
+* [Cart interactions](cart-interactions.md)
 
