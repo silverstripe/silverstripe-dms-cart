@@ -1,18 +1,21 @@
 <?php
 
-class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
+class DMSCheckoutController extends ContentController
 {
     private static $allowed_actions = array(
         'DMSDocumentRequestForm',
-        'complete'
+        'index',
+        'complete',
+        'send'
     );
 
     /**
      * An array containing the recipients basic information
      *
+     * @config
      * @var array
      */
-    public static $receiverInfo = array(
+    private static $receiver_info = array(
         'ReceiverName'            => '',
         'ReceiverPhone'           => '',
         'ReceiverEmail'           => '',
@@ -26,7 +29,18 @@ class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
     {
         parent::init();
 
-        Requirements::css(DMS_CART_DIR.'/css/dms-cart.css');
+        Requirements::css(DMS_CART_DIR . '/css/dms-cart.css');
+    }
+
+    public function index()
+    {
+        $form = $this->DMSDocumentRequestForm();
+        return $this
+            ->customise(array(
+                'Form' => $form,
+                'Title' => _t(__CLASS__ . '.CHECKOUT_TITLE', 'Checkout')
+            ))
+            ->renderWith(array('Page', 'DMSDocumentRequestForm'));
     }
 
     /**
@@ -50,7 +64,7 @@ class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
         $fields->replaceField('DeliveryAddressLine2', TextField::create('DeliveryAddressLine2', ''));
         $fields->replaceField('DeliveryAddressCountry', CountryDropdownField::create(
             'DeliveryAddressCountry',
-            _t('DMSDocumentCartCheckoutPage.RECEIVER_COUNTRY', 'Country')
+            _t(__CLASS__ . '.RECEIVER_COUNTRY', 'Country')
         )->setValue('NZ'));
 
         $requiredFields = array(
@@ -70,17 +84,11 @@ class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
         $actions = FieldList::create(
             FormAction::create(
                 'doRequestSend',
-                _t('DMSDocumentCartCheckoutPage.SEND_ACTION', 'Send your request')
+                _t(__CLASS__ . '.SEND_ACTION', 'Send your request')
             )
         );
 
-        $form = Form::create(
-            $this,
-            'DMSDocumentRequestForm',
-            $fields,
-            $actions,
-            $validator
-        );
+        $form = Form::create($this, 'DMSDocumentRequestForm', $fields, $actions, $validator);
 
         if ($receiverInfo = $this->getCart()->getReceiverInfo()) {
             $form->loadDataFrom($receiverInfo);
@@ -105,31 +113,27 @@ class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
      * }
      * </code>
      * @return mixed
-     *
-     * @throws DMSDocumentCartException
      */
     public function send()
     {
-        $member = $this->CartEmailRecipient();
-
-        if (!$member->exists()) {
-            throw new DMSDocumentCartException('No recipient has been configured. Please do so from the CMS');
-        }
-
         $cart = $this->getCart();
         $from = Config::inst()->get('Email', 'admin_email');
         $emailAddress = ($info = $cart->getReceiverInfo()) ? $info['ReceiverEmail'] : $from;
         $email = Email::create(
             $from,
             $emailAddress,
-            _t('DMSDocumentCartCheckoutPage.EMAIL_SUBJECT', 'Request for Printed Publications')
+            _t(__CLASS__ . '.EMAIL_SUBJECT', 'Request for Printed Publications')
         );
-        $email->setBcc($member->Email);
+
+        if ($bcc = $this->getConfirmationBcc()) {
+            $email->setBcc($bcc);
+        }
+
         $renderedCart = $cart->renderWith('DocumentCart_email');
         $body = sprintf(
             '<p>%s</p>',
             _t(
-                'DMSDocumentCartCheckoutPage.EMAIL_BODY',
+                __CLASS__ . '.EMAIL_BODY',
                 'A request for printed publications has been submitted with the following details:'
             )
         );
@@ -165,17 +169,21 @@ class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
     /**
      * Displays the preconfigured thank you message to the user upon completion
      *
-     * @return ViewableData_Customised
+     * @return ViewableData
      */
     public function complete()
     {
-        return $this->customise(
-            ArrayData::create(
-                array(
-                    'Content' => $this->ThanksMessage,
-                )
+        $data = array(
+            'Title' => _t(__CLASS__ . '.COMPLETE_THANKS', 'Thanks!'),
+            'Content' => _t(
+                __CLASS__ . '.COMPLETE_MESSAGE',
+                'Thank you. You will receive a confirmation email shortly.'
             )
         );
+
+        $this->extend('updateCompleteMessage', $data);
+
+        return $this->customise($data)->renderWith('Page');
     }
 
     /**
@@ -214,7 +222,33 @@ class DMSDocumentCartCheckoutPage_Controller extends Page_Controller
      */
     public function updateCartReceiverInfo($data)
     {
-        $info = array_merge(self::$receiverInfo, $data);
+        $info = array_merge(static::config()->get('receiver_info'), $data);
         $this->getCart()->setReceiverInfo($info);
+    }
+
+    /**
+     * Ensure that links for this controller use the customised route
+     *
+     * @param  string $action
+     * @return string
+     */
+    public function Link($action = null)
+    {
+        return $this->join_links('checkout', $action);
+    }
+
+    /**
+     * If BCC email addresses are configured, return the addresses to send to in comma delimited format
+     *
+     * @return string
+     */
+    protected function getConfirmationBcc()
+    {
+        $emails = (array) static::config()->get('recipient_emails');
+        if (empty($emails)) {
+            return false;
+        }
+
+        return implode(',', $emails);
     }
 }

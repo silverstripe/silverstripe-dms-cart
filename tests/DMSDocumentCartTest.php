@@ -150,14 +150,13 @@ class DMSDocumentCartTest extends SapphireTest
 
     public function testSaveSubmission()
     {
-        $page = $this->objFromFixture('DMSDocumentCartCheckoutPage', 'page1');
-        /** @var DMSDocumentCartCheckoutPage_Controller $controller */
-        $controller = ModelAsController::controller_for($page);
+        /** @var DMSCheckoutController $controller */
+        $controller = DMSCheckoutController::create();
         // Form for use later
         $form = $controller->DMSDocumentRequestForm();
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
         // Add some an item to the cart to assert later that its empty
-        $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(15);
+        $item = DMSRequestItem::create($doc)->setQuantity(15);
         $controller->getCart()->addItem($item);
 
         $submissionID = $controller->getCart()->saveSubmission($form);

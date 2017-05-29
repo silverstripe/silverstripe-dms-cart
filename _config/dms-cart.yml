@@ -5,10 +5,12 @@ After: framework/routes#coreroutes
 Director:
   rules:
     'documentcart': 'DMSDocumentCartController'
+    'checkout//$Action': 'DMSCheckoutController'
 
 DMSDocument:
   extensions:
     - DMSDocumentCartExtension
 
-DMSDocumentCartCheckoutPage:
-  documents_enabled: false
+# Add email addresses here that should receive BCC'd copies of submission confirmation emails
+DMSCheckoutController:
+  recipient_emails: []

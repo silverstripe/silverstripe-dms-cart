@@ -1,10 +1,11 @@
 <?php
 
-class DMSDocumentCartCheckoutPageTest extends FunctionalTest
+class DMSCheckoutControllerTest extends FunctionalTest
 {
-    protected static $fixture_file = 'DMSDocumentCartTest.yml';
+    protected static $fixture_file = 'dms-cart/tests/DMSDocumentCartTest.yml';
+
     /**
-     * @var DMSDocumentCartCheckoutPage_Controller
+     * @var DMSCheckoutController
      */
     protected $controller;
 
@@ -13,18 +14,14 @@ class DMSDocumentCartCheckoutPageTest extends FunctionalTest
      */
     protected $cart;
 
-    /**
-     * @var DMSDocumentCartCheckoutPage
-     */
-    protected $page;
-
     public function setUp()
     {
         parent::setUp();
-        $this->page = $this->objFromFixture('DMSDocumentCartCheckoutPage', 'page1');
-        DMSDocumentCartCheckoutPage_Controller::add_extension('StubDMSDocumentCheckoutPageExtension');
+
+        DMSCheckoutController::add_extension('StubDMSDocumentCheckoutPageExtension');
         Injector::inst()->registerService(new StubEmail(), 'Email');
-        $this->controller = ModelAsController::controller_for($this->page);
+
+        $this->controller = DMSCheckoutController::create();
         $this->cart = $this->controller->getCart();
     }
 
@@ -151,5 +148,44 @@ class DMSDocumentCartCheckoutPageTest extends FunctionalTest
         $result = $this->controller->doRequestSend($data, $form, $request);
         $this->assertInstanceOf('SS_HTTPResponse', $result);
         $this->assertTrue($this->controller->getCart()->isCartEmpty());
+    }
+
+    /**
+     * Test the checkout success page shows a pretty message
+     */
+    public function testCompletePage()
+    {
+        $result = (string) $this->get('checkout/complete')->getBody();
+        $this->assertContains('Thanks!', $result);
+        $this->assertContains('You will receive a confirmation email', $result);
+    }
+
+    /**
+     * Ensure the link is "friendly", not a class name
+     */
+    public function testLink()
+    {
+        $this->assertSame('checkout', $this->controller->Link());
+        $this->assertSame('checkout/complete', $this->controller->Link('complete'));
+    }
+
+    /**
+     * Test that the items in my cart are listed on the checkout page, and that some form fields exist
+     */
+    public function testIndexCheckoutForm()
+    {
+        $backend = DMSSessionBackend::singleton();
+        $document = $this->objFromFixture('DMSDocument', 'limited_supply');
+        $requestItem = DMSRequestItem::create($document);
+        $backend->addItem($requestItem);
+
+        $response = $this->get('checkout');
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $body = (string) $response->getBody();
+        $this->assertContains('Checkout', $body);
+        $this->assertContains('Your request in summary', $body);
+        $this->assertContains('Doc3', $body);
+        $this->assertContains('Receiver Name', $body);
     }
 }

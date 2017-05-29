@@ -15,7 +15,7 @@ class DMSDocumentCart extends ViewableData
     public function __construct($backend = null)
     {
         parent::__construct();
-        $this->backend = ($backend) ?: DMSSessionBackend::create(); // Default to DMSSessionBackend if not provided
+        $this->backend = ($backend) ?: DMSSessionBackend::singleton(); // Default to DMSSessionBackend if not provided
     }
 
     /**

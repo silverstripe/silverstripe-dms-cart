@@ -20,7 +20,3 @@ DMSDocument:
     Filename: Doc4
     Title: Doc4
     AllowedInCart: 0
-DMSDocumentCartCheckoutPage:
-  page1:
-    ThanksMessage: Thank you for your submission
-    CartEmailRecipient: =>Member.joe

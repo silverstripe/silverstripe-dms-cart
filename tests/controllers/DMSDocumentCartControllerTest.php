@@ -5,7 +5,7 @@
  */
 class DMSDocumentCartControllerTest extends FunctionalTest
 {
-    protected static $fixture_file = 'DMSDocumentCartTest.yml';
+    protected static $fixture_file = 'dms-cart/tests/DMSDocumentCartTest.yml';
 
     /**
      * @var DMSDocumentCartController

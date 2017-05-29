@@ -3,7 +3,7 @@
 class StubDMSDocumentCheckoutPageExtension extends Extension implements TestOnly
 {
     /**
-     * For method {@link DMSDocumentCartCheckoutPage_Controller::DMSDocumentRequestForm}
+     * For method {@link DMSCheckoutController::DMSDocumentRequestForm}
      *
      * @param  Form $form
      */
@@ -13,7 +13,7 @@ class StubDMSDocumentCheckoutPageExtension extends Extension implements TestOnly
     }
 
     /**
-     * For method {@link DMSDocumentCartCheckoutPage_Controller::DMSDocumentRequestForm}
+     * For method {@link DMSCheckoutController::DMSDocumentRequestForm}
      *
      * @param Email $email
      */
