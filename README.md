@@ -5,12 +5,14 @@
 ## Overview
 
 The module adds a new `DMSDocumentCart` model which allows for the request of physical copies of documents from a
-Document Management Module to be printed and/or downloaded.
+Document Management Module to be printed and sent to a physical address.
 
 
 ## Features
 
- * Ability to request printed copies of several documents from a Document Set
+ * Ability to request printed copies of documents which are marked as `Allowed in Cart`
+ * Set a per document limit on total copies which can be requested
+ * View and amend historical print requests 
 
 ## Documentation
 
@@ -29,7 +31,7 @@ third party translation interface, transifex.com.
 Newly added strings will be periodically uploaded there for translation,
 and any new translations will be merged back to the project source code.
 
-Please use [https://www.transifex.com/projects/p/silverstripe-dms/](https://www.transifex.com/projects/p/silverstripe-dms/) to contribute translations,
+Please use [https://www.transifex.com/projects/p/silverstripe-dms/](https://www.transifex.com/projects/p/silverstripe-dms-cart/) to contribute translations,
 rather than sending pull requests with YAML files.
 
 See the ["i18n" topic](http://doc.silverstripe.org/framework/en/trunk/topics/i18n) on doc.silverstripe.org for more details.
