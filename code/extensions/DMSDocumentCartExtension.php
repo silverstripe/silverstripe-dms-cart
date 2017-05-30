@@ -22,6 +22,10 @@ class DMSDocumentCartExtension extends DataExtension
         'PrintRequestCount'   => 'Int',
     );
 
+    private static $summary_fields = array(
+        'PrintRequestCount' => 'Print Requests',
+    );
+
     /**
      * Returns if a Document is permitted to reflect in a cart
      *
@@ -162,5 +166,33 @@ class DMSDocumentCartExtension extends DataExtension
             return $result;
         }
         return false;
+    }
+
+    /**
+     * Add a "print request count" field to the summary fields for editing a DMS document
+     *
+     * @see DMSDocument::getFieldsForFile
+     * @param FieldGroup $fieldGroup
+     */
+    public function updateFieldsForFile(FieldGroup $fieldGroup)
+    {
+        $fields = $fieldGroup->FieldList();
+
+        /** @var FieldList $summaryFields */
+        $summaryFields = $fields->fieldByName('FilePreview.FilePreviewData.FilePreviewDataFields');
+        if (!($summaryFields instanceof CompositeField)) {
+            return;
+        }
+
+        $summaryFields->FieldList()->push(
+            ReadonlyField::create(
+                'PrintRequestCount',
+                _t(
+                    __CLASS__ . '.PRINT_REQUEST_COUNT',
+                    'Print request count:'
+                ),
+                $this->owner->PrintRequestCount
+            )
+        );
     }
 }

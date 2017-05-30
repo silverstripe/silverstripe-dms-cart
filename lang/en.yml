@@ -10,6 +10,8 @@ en:
   DMSDocumentCartController:
     ERROR_NOT_ALLOWED: You are not allowed to add this document
     ERROR_QUANTITY_EXCEEDED: You can't add {quantity} of this document
+  DMSDocumentCartExtension:
+    PRINT_REQUEST_COUNT: 'Print request count:'
   DMSCheckoutController:
     CHECKOUT_TITLE: Checkout
     COMPLETE_THANKS: Thanks!
