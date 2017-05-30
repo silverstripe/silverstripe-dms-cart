@@ -107,18 +107,18 @@ class DMSDocumentCartExtension extends DataExtension
     /**
      * Builds and returns a valid DMSDocumentController URL from the given $action link
      *
-     * @param string $action Can be either 'add', 'remove' or 'checkout
+     * @param string $action Can be either 'add', 'remove' or 'checkout'
      *
      * @return string
      *
-     * @throws InvalidArgumentException if the provided $action is not allowed.
+     * @throws DMSDocumentCartException if the provided $action is not allowed.
      */
     public function getActionLink($action = 'add')
     {
         $action = strtolower($action);
         $allowedActions = array_merge($this->getCartController()->allowedActions(), array('checkout'));
         if (!in_array($action, $allowedActions)) {
-            throw new InvalidArgumentException("{$action} is not accepted for this method.");
+            throw new DMSDocumentCartException("{$action} is not accepted for this method.");
         }
 
         if ($action === 'checkout') {

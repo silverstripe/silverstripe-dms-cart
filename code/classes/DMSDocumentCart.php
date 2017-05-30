@@ -12,10 +12,19 @@ class DMSDocumentCart extends ViewableData
      */
     protected $backend;
 
+    /**
+     * Instantiate a cart backend either by that provided, or a session default
+     *
+     * @param DMSCartBackendInterface $backend
+     * @throws DMSDocumentCartException If a backend was provided but doesn't implement the backend interface
+     */
     public function __construct($backend = null)
     {
         parent::__construct();
-        $this->backend = ($backend) ?: DMSSessionBackend::singleton(); // Default to DMSSessionBackend if not provided
+        if ($backend && !($backend instanceof DMSCartBackendInterface)) {
+            throw new DMSDocumentCartException('Backend must implement DMSCartBackendInterface!');
+        }
+        $this->backend = ($backend) ?: DMSSessionBackend::singleton();
     }
 
     /**

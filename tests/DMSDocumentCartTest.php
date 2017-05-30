@@ -18,6 +18,15 @@ class DMSDocumentCartTest extends SapphireTest
         $this->cart = singleton('DMSDocumentCart');
     }
 
+    /**
+     * @expectedException DMSDocumentCartException
+     * @expectedExceptionMessage Backend must implement DMSCartBackendInterface!
+     */
+    public function testConstructorThrowsExceptionWhenProvidedBackendDoesNotImplementInterface()
+    {
+        DMSDocumentCart::create(new DMSDocument);
+    }
+
     public function testAddItem()
     {
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
