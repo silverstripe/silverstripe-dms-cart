@@ -2,6 +2,8 @@
 
 class DMSDocumentCartExtensionTest extends SapphireTest
 {
+    protected static $fixture_file = 'DMSDocumentCartExtensionTest.yml';
+
     protected $requiredExtensions = array(
         'DMSDocument' => array('DMSDocumentCartExtension')
     );
@@ -47,5 +49,24 @@ class DMSDocumentCartExtensionTest extends SapphireTest
         Session::set('dms-cart-validation-message', 'testing');
         $this->assertSame('testing', DMSDocument::create()->getValidationResult());
         $this->assertFalse(DMSDocument::create()->getValidationResult());
+    }
+
+    /**
+     * Test that print request count is shown in the document's summary
+     */
+    public function testPrintRequestCountIsShownInDocumentSummary()
+    {
+        $document = $this->objFromFixture('DMSDocument', 'requested_for_print');
+        $fields = $document->getCMSFields();
+
+        // Results of DMSDocument::getFieldsForFile is the first in the list
+        $summary = $fields->first();
+        $this->assertInstanceOf('FieldGroup', $summary);
+
+        $printRequestField = $summary->FieldList()
+            ->fieldByName('FilePreview.FilePreviewData.FilePreviewDataFields.PrintRequestCount');
+
+        $this->assertNotNull($printRequestField, 'Print request count field exists in DMSDocument fields');
+        $this->assertEquals(3, $printRequestField->Value());
     }
 }
