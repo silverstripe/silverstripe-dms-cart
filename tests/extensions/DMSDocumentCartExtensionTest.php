@@ -69,4 +69,13 @@ class DMSDocumentCartExtensionTest extends SapphireTest
         $this->assertNotNull($printRequestField, 'Print request count field exists in DMSDocument fields');
         $this->assertEquals(3, $printRequestField->Value());
     }
+
+    /**
+     * @expectedException DMSDocumentCartException
+     * @expectedExceptionMessage peanut is not accepted for this method.
+     */
+    public function testGetActionLinkThrowsExceptionOnInvalidAction()
+    {
+        DMSDocument::singleton()->getActionLink('Peanut');
+    }
 }
