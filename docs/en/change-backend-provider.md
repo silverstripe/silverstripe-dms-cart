@@ -13,7 +13,7 @@ Injector:
 
 In the above example, `%$NewBackendService` should be a valid class which implements `DMSCartBackendInterface` interface.
 
-You can also switch this by providing is to the `DMSDocumentCart` constructor:
+You can also switch this by providing it to the `DMSDocumentCart` constructor:
 
 ```php
 $cart = DMSDocumentCart::create($newBackendService);
