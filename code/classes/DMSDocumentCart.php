@@ -13,6 +13,13 @@ class DMSDocumentCart extends ViewableData
     protected $backend;
 
     /**
+     * Variable to control whether a cart is being updated or not
+     *
+     * @var bool
+     */
+    private $viewOnly = false;
+
+    /**
      * Instantiate a cart backend either by that provided, or a session default
      *
      * @param DMSCartBackendInterface $backend
@@ -246,5 +253,47 @@ class DMSDocumentCart extends ViewableData
         });
 
         return $return;
+    }
+
+    /**
+     * Returns true if the cart is being updated. False otherwise
+     * @return bool
+     */
+    public function isViewOnly()
+    {
+        return $this->viewOnly;
+    }
+
+    /**
+     * Sets the updating flag
+     *
+     * @param bool $viewOnly
+     * @return DMSDocumentCart
+     */
+    public function setViewOnly($viewOnly)
+    {
+        $this->viewOnly = (bool) $viewOnly;
+        return $this;
+    }
+
+    /**
+     * Displays a view-only table of the cart items.
+     *
+     * @return HTMLText
+     */
+    public function getSummary()
+    {
+        return $this->renderWith('DMSDocumentCartSummary');
+    }
+
+    /**
+     * Utility method to link to the current controllers action
+     *
+     * @param string $action
+     * @return string
+     */
+    public function getLink($action = null)
+    {
+        return DMSDocumentCartController::create()->Link($action);
     }
 }

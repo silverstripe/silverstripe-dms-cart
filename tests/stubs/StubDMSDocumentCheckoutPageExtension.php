@@ -21,4 +21,14 @@ class StubDMSDocumentCheckoutPageExtension extends Extension implements TestOnly
     {
         $email->setSubject('Subject is changed');
     }
+
+    /**
+     * For method {@link DMSCheckoutController::DMSDocumentRequestForm}
+     *
+     * @param  Form $form
+     */
+    public function updateDMSCartEditForm(Form $form)
+    {
+        $form->Fields()->push(TextField::create('NewTextField'));
+    }
 }

@@ -6,7 +6,7 @@ class DMSCheckoutController extends ContentController
         'DMSDocumentRequestForm',
         'index',
         'complete',
-        'send'
+        'send',
     );
 
     /**
@@ -34,17 +34,18 @@ class DMSCheckoutController extends ContentController
 
     public function index()
     {
+        $this->getCart()->setBackUrl(Director::absoluteBaseURL().$this->Link());
         $form = $this->DMSDocumentRequestForm();
         return $this
             ->customise(array(
-                'Form' => $form,
+                'Form'  => $form,
                 'Title' => _t(__CLASS__ . '.CHECKOUT_TITLE', 'Checkout')
             ))
             ->renderWith(array('Page', 'DMSDocumentRequestForm'));
     }
 
     /**
-     * Gets and displays an editable list of items within the cart, as well as a contact form with entry
+     * Gets and displays a list of items within the cart, as well as a contact form with entry
      * fields for the recipients information.
      *
      * To extend use the following from within an Extension subclass:
@@ -149,15 +150,14 @@ class DMSCheckoutController extends ContentController
      * Totals requested are updated, delivery details added, email sent for fulfillment
      * and print request totals updated.
      *
-     * @param array          $data
-     * @param Form           $form
+     * @param array $data
+     * @param Form $form
      * @param SS_HTTPRequest $request
      *
      * @return SS_HTTPResponse
      */
     public function doRequestSend($data, Form $form, SS_HTTPRequest $request)
     {
-        $this->updateCartItems($data);
         $this->updateCartReceiverInfo($data);
         $this->send();
         $this->getCart()->saveSubmission($form);
@@ -174,7 +174,7 @@ class DMSCheckoutController extends ContentController
     public function complete()
     {
         $data = array(
-            'Title' => _t(__CLASS__ . '.COMPLETE_THANKS', 'Thanks!'),
+            'Title'   => _t(__CLASS__ . '.COMPLETE_THANKS', 'Thanks!'),
             'Content' => _t(
                 __CLASS__ . '.COMPLETE_MESSAGE',
                 'Thank you. You will receive a confirmation email shortly.'
@@ -194,25 +194,6 @@ class DMSCheckoutController extends ContentController
     public function getCart()
     {
         return singleton('DMSDocumentCart');
-    }
-
-    /**
-     * Updates the document quantities just before the request is sent.
-     *
-     * @param array $data
-     */
-    public function updateCartItems($data)
-    {
-        if (!empty($data['ItemQuantity'])) {
-            foreach ($data['ItemQuantity'] as $itemID => $quantity) {
-                // Only update if quantity has changed
-                $item = $this->getCart()->getItem($itemID);
-                if ($item->getQuantity() == $quantity) {
-                    continue;
-                }
-                $this->getCart()->updateItemQuantity($itemID, $quantity - 1);
-            }
-        }
     }
 
     /**
