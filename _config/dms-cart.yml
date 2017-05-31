@@ -11,6 +11,10 @@ DMSDocument:
   extensions:
     - DMSDocumentCartExtension
 
+DMSDocumentAdmin:
+  extensions:
+    - DMSDocumentAdminExtension
+
 # Add email addresses here that should receive BCC'd copies of submission confirmation emails
 DMSCheckoutController:
   recipient_emails: []
