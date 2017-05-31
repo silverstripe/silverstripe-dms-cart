@@ -1,6 +1,6 @@
 <div>
     <% include RequestItems_email %>
-    <table>
+    <table style="margin-top:20px; text-align:left; width:100%;">
         <thead>
         <tr>
             <th colspan="2">

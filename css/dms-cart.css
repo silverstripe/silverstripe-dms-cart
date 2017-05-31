@@ -1,5 +1,5 @@
-.dms-cart-actions .dms-cart-actions-viewcartlink:before {
-  content: "• "
+.dms-cart-actions .dms-cart-actions-removelink {
+  margin-right: 15px;
 }
 
 .checkout-page-thumbnail .thumbnail {
