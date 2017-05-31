@@ -1,4 +1,4 @@
-<table title="<%t DMSCart.TABLE_TITLE "Requested documents" %>">
+<table title="<%t DMSCart.TABLE_TITLE "Requested documents" %>" style="text-align:left; width:100%;">
     <thead>
     <tr>
         <th>
