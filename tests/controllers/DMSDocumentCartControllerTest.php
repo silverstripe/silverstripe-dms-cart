@@ -153,13 +153,6 @@ class DMSDocumentCartControllerTest extends FunctionalTest
         $this->assertJson($response, 'Confirmed that  an ajax call to remove() method responded with JSON');
     }
 
-    public function testCart()
-    {
-        $this->assertInstanceOf('DMSDocumentCart', $this->controller->getCart());
-        //For good measure assert it's empty
-        $this->assertTrue($this->controller->getIsCartEmpty());
-    }
-
     /**
      * Ensure that a validation error is shown when requesting to add more of a document that is allowed
      */
@@ -224,16 +217,6 @@ class DMSDocumentCartControllerTest extends FunctionalTest
     }
 
     /**
-     * Ensure the link is "friendly", not a class name
-     */
-    public function testLink()
-    {
-        $this->assertSame('documentcart', $this->controller->Link());
-        $this->assertSame('documentcart/view', $this->controller->Link('view'));
-    }
-
-
-    /**
      * Tests DMSCartEditForm form has a FieldList
      */
     public function testDMSCartEditForm()
@@ -263,5 +246,14 @@ class DMSDocumentCartControllerTest extends FunctionalTest
         $result = $this->get('documentcart/view');
         $this->assertInstanceOf('SS_HTTPResponse', $result);
         $this->assertContains('Updating cart items', $result->getBody());
+    }
+
+    /**
+     * Ensure the link is "friendly", not a class name
+     */
+    public function testLink()
+    {
+        $this->assertSame('documentcart', $this->controller->Link());
+        $this->assertSame('documentcart/view', $this->controller->Link('view'));
     }
 }

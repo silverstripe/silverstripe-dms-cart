@@ -1,6 +1,6 @@
 <?php
 
-class DMSDocumentCartController extends ContentController
+class DMSDocumentCartController extends DMSCartAbstractController
 {
     private static $url_handlers = array(
         '$Action//$ID' => 'handleAction',
@@ -162,16 +162,6 @@ class DMSDocumentCartController extends ContentController
     }
 
     /**
-     * Retrieves a {@link DMSDocumentCart} instance
-     *
-     * @return DMSDocumentCart
-     */
-    public function getCart()
-    {
-        return singleton('DMSDocumentCart');
-    }
-
-    /**
      * Validates a request to add a document to the cart
      *
      * @param  int $quantity
@@ -286,18 +276,5 @@ class DMSDocumentCartController extends ContentController
         $form->setTemplate('DMSDocumentRequestForm');
         $this->extend('updateDMSCartEditForm', $form);
         return $form;
-    }
-
-    /**
-     * Ensure that links for this controller use the customised route
-     *
-     * @param  string $action
-     * @return string
-     */
-    public function Link($action = null)
-    {
-        if ($url = array_search(__CLASS__, (array)Config::inst()->get('Director', 'rules'))) {
-            return $this->join_links($url, $action);
-        }
     }
 }

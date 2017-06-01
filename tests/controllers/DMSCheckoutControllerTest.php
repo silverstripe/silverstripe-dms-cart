@@ -48,14 +48,6 @@ class DMSCheckoutControllerTest extends FunctionalTest
     }
 
     /**
-     * Tests if a Cart is received
-     */
-    public function testGetCart()
-    {
-        $this->assertInstanceOf('DMSDocumentCart', $this->controller->getCart());
-    }
-
-    /**
      * Tests whether the recipient details are updated from the controller
      */
     public function testUpdateCartReceiverInfo()
@@ -145,15 +137,6 @@ class DMSCheckoutControllerTest extends FunctionalTest
     }
 
     /**
-     * Ensure the link is "friendly", not a class name
-     */
-    public function testLink()
-    {
-        $this->assertSame('checkout', $this->controller->Link());
-        $this->assertSame('checkout/complete', $this->controller->Link('complete'));
-    }
-
-    /**
      * Test that the items in my cart are listed on the checkout page, and that some form fields exist
      */
     public function testIndexCheckoutForm()
@@ -171,5 +154,14 @@ class DMSCheckoutControllerTest extends FunctionalTest
         $this->assertContains('Your request in summary', $body);
         $this->assertContains('Doc3', $body);
         $this->assertContains('Receiver Name', $body);
+    }
+
+    /**
+     * Ensure the link is "friendly", not a class name
+     */
+    public function testLink()
+    {
+        $this->assertSame('checkout', $this->controller->Link());
+        $this->assertSame('checkout/complete', $this->controller->Link('complete'));
     }
 }
