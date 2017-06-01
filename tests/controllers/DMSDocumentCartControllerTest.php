@@ -20,6 +20,7 @@ class DMSDocumentCartControllerTest extends FunctionalTest
     public function setUp()
     {
         parent::setUp();
+        DMSDocumentCartController::add_extension('StubDMSDocumentCheckoutPageExtension');
         $this->controller = DMSDocumentCartController::create();
         $this->cart = $this->controller->getCart();
     }
@@ -166,7 +167,7 @@ class DMSDocumentCartControllerTest extends FunctionalTest
     {
         $document = $this->objFromFixture('DMSDocument', 'limited_supply');
         $result = $this->get('/documentcart/add/' . $document->ID . '?quantity=5&ajax=1');
-        $this->assertContains('You can\'t add 5 of this document', (string) $result->getBody());
+        $this->assertContains("You can't add 5 of '{$document->getTitle()}'", (string) $result->getBody());
     }
 
     /**
@@ -178,5 +179,89 @@ class DMSDocumentCartControllerTest extends FunctionalTest
         $document = $this->objFromFixture('DMSDocument', 'not_allowed_in_cart');
         $result = $this->get('/documentcart/add/' . $document->ID . '?ajax=1');
         $this->assertContains('You are not allowed to add this document', (string) $result->getBody());
+    }
+
+    /**
+     * Tests whether the cart items are updated from the controller
+     */
+    public function testUpdateCartItems()
+    {
+        $doc = $this->objFromFixture('DMSDocument', 'doc1');
+        /** @var DMSRequestItem $item */
+        $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(2);
+        $this->cart->addItem($item);
+
+        $invalidQuantities = array(
+            'ItemQuantity' => array($doc->ID => 'non-numeric')
+        );
+
+        $sameQuantities = array(
+            'ItemQuantity' => array($doc->ID => 2)
+        );
+
+        $updatedQuantities = array(
+            'ItemQuantity' => array($doc->ID => 5),
+        );
+        $form = Form::create(
+            $this->controller,
+            'Test',
+            FieldList::create(),
+            FieldList::create()
+        );
+        $request = new SS_HTTPRequest('POST', '');
+        // Test invalids leave it unchanged
+        $response = $this->controller->updateCartItems($invalidQuantities, $form, $request);
+        $this->assertEquals(2, $this->cart->getItem($item->getItemId())->getQuantity());
+
+        // Test quantity remains the same
+        $response->removeHeader('Location');
+        $response =$this->controller->updateCartItems($sameQuantities, $form, $request);
+        $this->assertEquals(2, $this->cart->getItem($item->getItemId())->getQuantity());
+
+        $response->removeHeader('Location');
+        $response = $this->controller->updateCartItems($updatedQuantities, $form, $request);
+        $this->assertEquals(5, $this->cart->getItem($item->getItemId())->getQuantity());
+    }
+
+    /**
+     * Ensure the link is "friendly", not a class name
+     */
+    public function testLink()
+    {
+        $this->assertSame('documentcart', $this->controller->Link());
+        $this->assertSame('documentcart/view', $this->controller->Link('view'));
+    }
+
+
+    /**
+     * Tests DMSCartEditForm form has a FieldList
+     */
+    public function testDMSCartEditForm()
+    {
+        $form = $this->controller->DMSCartEditForm();
+        $this->assertInstanceOf('FieldList', $form->Fields());
+    }
+
+    /**
+     * Tests if the DMSCartEditForm is extensible
+     */
+    public function testDMSCartEditFormIsExtensible()
+    {
+        $controller = $this->controller;
+        $form = $controller->DMSCartEditForm();
+        $this->assertNotNull(
+            $form->Fields()->fieldByName('NewTextField'),
+            'DMSDocumentRequestForm() is extensible as it included the field from the extension'
+        );
+    }
+
+    /**
+     * Tests that the cart summary view is returned.
+     */
+    public function testView()
+    {
+        $result = $this->get('documentcart/view');
+        $this->assertInstanceOf('SS_HTTPResponse', $result);
+        $this->assertContains('Updating cart items', $result->getBody());
     }
 }

@@ -1,18 +1,24 @@
 <?php
 
-class DMSDocumentCartController extends Controller
+class DMSDocumentCartController extends ContentController
 {
     private static $url_handlers = array(
         '$Action//$ID' => 'handleAction',
     );
 
     private static $allowed_actions = array(
-        'DocumentCartForm',
+        'DMSCartEditForm',
         'add',
         'deduct',
         'remove',
+        'view'
     );
 
+    public function init()
+    {
+        parent::init();
+        Requirements::css(DMS_CART_DIR . '/css/dms-cart.css');
+    }
     /**
      * See {@link DMSDocumentCart::getItems()}
      *
@@ -183,13 +189,115 @@ class DMSDocumentCartController extends Controller
         if ($document->getHasQuantityLimit() && $quantity > $document->getMaximumQuantity()) {
             $result->error(_t(
                 __CLASS__ . '.ERROR_QUANTITY_EXCEEDED',
-                'You can\'t add {quantity} of this document',
-                array('quantity' => $quantity)
+                'You can\'t add {quantity} of \'{title}\'',
+                array('quantity' => $quantity, 'title' => $document->getTitle())
             ));
         }
 
         $this->extend('updateValidateAddRequest', $result, $quantity, $document);
 
         return $result;
+    }
+
+    /**
+     * Updates the document quantities just before the request is sent.
+     *
+     * @param array $data
+     * @param Form $form
+     * @param SS_HTTPRequest $request
+     *
+     * @return SS_HTTPResponse
+     */
+    public function updateCartItems($data, Form $form, SS_HTTPRequest $request)
+    {
+        if (!empty($data['ItemQuantity'])) {
+            foreach ($data['ItemQuantity'] as $itemID => $quantity) {
+                if (!is_numeric($quantity) || $quantity < 0) {
+                    continue;
+                }
+                // Only update if quantity has changed
+                $item = $this->getCart()->getItem($itemID);
+                if ($item->getQuantity() == $quantity) {
+                    continue;
+                }
+                // No validate item
+                $validate = $this->validateAddRequest($quantity, $item->getDocument());
+                if ($validate->valid()) {
+                    // Removes, then adds a item new item.
+                    $this->getCart()->removeItem($item);
+                    $this->getCart()->addItem($item->setQuantity($quantity));
+                } else {
+                    $form->sessionMessage($validate->starredList(), 'bad');
+                    return $this->redirectBack();
+                }
+            }
+        }
+
+        return $this->redirect($this->getCart()->getBackUrl());
+    }
+
+    /**
+     * Presents an interface for user to update the cart quantities
+     *
+     * @param SS_HTTPRequest $request
+     * @return ViewableData_Customised
+     */
+    public function view(SS_HTTPRequest $request)
+    {
+        $this->getCart()->setViewOnly(true);
+        $form = $this->DMSCartEditForm();
+        return $this
+            ->customise(
+                array(
+                'Form'  => $form,
+                'Title' => _t(__CLASS__ . '.UPDATE_TITLE', 'Updating cart items')
+                )
+            );
+    }
+
+    /**
+     * Gets and displays an editable list of items within the cart.
+     *
+     * To extend use the following from within an Extension subclass:
+     *
+     * <code>
+     * public function updateDMSCartEditForm($form)
+     * {
+     *     // Do something here
+     * }
+     * </code>
+     *
+     * @return Form
+     */
+    public function DMSCartEditForm()
+    {
+        $actions = FieldList::create(
+            FormAction::create(
+                'updateCartItems',
+                _t(__CLASS__ . '.SAVE_BUTTON', 'Save changes')
+            )
+        );
+        $form = Form::create(
+            $this,
+            'DMSCartEditForm',
+            FieldList::create(),
+            $actions
+        );
+        $form->setTemplate('DMSDocumentRequestForm');
+        $this->extend('updateDMSCartEditForm', $form);
+        return $form;
+    }
+
+    /**
+     * Ensure that links for this controller use the customised route
+     *
+     * @param  string $action
+     * @return string
+     */
+    public function Link($action = null)
+    {
+        if ($url = array_search(__CLASS__, (array)Config::inst()->get('Director', 'rules'))) {
+            return $this->join_links($url, $action);
+        }
     }
 }

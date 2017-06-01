@@ -9,7 +9,7 @@ en:
     REQUESTED_ITEMS: Requested documents
   DMSDocumentCartController:
     ERROR_NOT_ALLOWED: You are not allowed to add this document
-    ERROR_QUANTITY_EXCEEDED: You can't add {quantity} of this document
+    ERROR_QUANTITY_EXCEEDED: You can't add {quantity} of '{title}'
   DMSDocumentCartExtension:
     PRINT_REQUEST_COUNT: 'Print request count:'
   DMSCheckoutController:

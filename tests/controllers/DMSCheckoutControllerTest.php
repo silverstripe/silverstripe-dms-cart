@@ -56,22 +56,6 @@ class DMSCheckoutControllerTest extends FunctionalTest
     }
 
     /**
-     * Tests whether the cart items are updated from the controller
-     */
-    public function testUpdateCartItems()
-    {
-        $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
-        $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(2);
-        $this->cart->addItem($item);
-        $updatedQuantities = array(
-            'ItemQuantity' => array($doc->ID => 5),
-        );
-        $this->controller->updateCartItems($updatedQuantities);
-        $this->assertEquals(6, $this->cart->getItem($item->getItemId())->getQuantity());
-    }
-
-    /**
      * Tests whether the recipient details are updated from the controller
      */
     public function testUpdateCartReceiverInfo()

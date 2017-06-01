@@ -7,3 +7,7 @@
   border: none;
   vertical-align: middle;
 }
+
+.Actions a.action:hover {
+  border-bottom: inherit;
+}
