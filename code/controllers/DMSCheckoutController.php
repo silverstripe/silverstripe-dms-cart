@@ -1,6 +1,6 @@
 <?php
 
-class DMSCheckoutController extends ContentController
+class DMSCheckoutController extends DMSCartAbstractController
 {
     private static $allowed_actions = array(
         'DMSDocumentRequestForm',
@@ -187,16 +187,6 @@ class DMSCheckoutController extends ContentController
     }
 
     /**
-     * Retrieves a {@link DMSDocumentCart} instance
-     *
-     * @return DMSDocumentCart
-     */
-    public function getCart()
-    {
-        return singleton('DMSDocumentCart');
-    }
-
-    /**
      * Updates the cart receiver info just before the request is sent.
      *
      * @param array $data
@@ -205,17 +195,6 @@ class DMSCheckoutController extends ContentController
     {
         $info = array_merge(static::config()->get('receiver_info'), $data);
         $this->getCart()->setReceiverInfo($info);
-    }
-
-    /**
-     * Ensure that links for this controller use the customised route
-     *
-     * @param  string $action
-     * @return string
-     */
-    public function Link($action = null)
-    {
-        return $this->join_links('checkout', $action);
     }
 
     /**
