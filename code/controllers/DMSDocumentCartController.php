@@ -173,14 +173,16 @@ class DMSDocumentCartController extends DMSCartAbstractController
         $result = ValidationResult::create();
 
         if (!$document->isAllowedInCart()) {
-            $result->error(_t(__CLASS__ . '.ERROR_NOT_ALLOWED', 'You are not allowed to add this document'));
+            $result->error(
+                _t('DMSDocumentCartController.ERROR_NOT_ALLOWED', 'You are not allowed to add this document')
+            );
         }
 
         if ($document->getHasQuantityLimit() && $quantity > $document->getMaximumQuantity()) {
             $result->error(_t(
-                __CLASS__ . '.ERROR_QUANTITY_EXCEEDED',
-                'You can\'t add {quantity} of \'{title}\'',
-                array('quantity' => $quantity, 'title' => $document->getTitle())
+                'DMSDocumentCartController.ERROR_QUANTITY_EXCEEDED',
+                'Maximum of {max} documents exceeded for "{title}", please select a lower quantity.',
+                array('max' => $document->getMaximumQuantity(), 'title' => $document->getTitle())
             ));
         }
 
@@ -200,6 +202,7 @@ class DMSDocumentCartController extends DMSCartAbstractController
      */
     public function updateCartItems($data, Form $form, SS_HTTPRequest $request)
     {
+        $errors = array();
         if (!empty($data['ItemQuantity'])) {
             foreach ($data['ItemQuantity'] as $itemID => $quantity) {
                 if (!is_numeric($quantity) || $quantity < 0) {
@@ -217,10 +220,14 @@ class DMSDocumentCartController extends DMSCartAbstractController
                     $this->getCart()->removeItem($item);
                     $this->getCart()->addItem($item->setQuantity($quantity));
                 } else {
-                    $form->sessionMessage($validate->starredList(), 'bad');
-                    return $this->redirectBack();
+                    $errors[] = $validate->starredList();
                 }
             }
+        }
+
+        if (!empty($errors)) {
+            $form->sessionMessage(implode('<br>', $errors), 'bad', false);
+            return $this->redirectBack();
         }
 
         return $this->redirect($this->getCart()->getBackUrl());

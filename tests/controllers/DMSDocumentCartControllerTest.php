@@ -160,7 +160,34 @@ class DMSDocumentCartControllerTest extends FunctionalTest
     {
         $document = $this->objFromFixture('DMSDocument', 'limited_supply');
         $result = $this->get('/documentcart/add/' . $document->ID . '?quantity=5&ajax=1');
-        $this->assertContains("You can't add 5 of '{$document->getTitle()}'", (string) $result->getBody());
+        $this->assertContains(
+            'Maximum of 3 documents exceeded for \"Doc3\", please select a lower quantity.',
+            (string) $result->getBody()
+        );
+    }
+
+    /**
+     * Ensure that multiple validation errors are returned in the failure message, if any
+     */
+    public function testMultipleValidationErrorsReturned()
+    {
+        $document1 = $this->objFromFixture('DMSDocument', 'limited_supply');
+        $document2 = $this->objFromFixture('DMSDocument', 'very_limited_supply');
+
+        $this->cart
+            ->addItem(DMSRequestItem::create($document1))
+            ->addItem(DMSRequestItem::create($document2));
+
+        $input = array('ItemQuantity' => array(
+            $document1->ID => 15000,
+            $document2->ID => 12000
+        ));
+
+        $form = Form::create($this->controller, '', new FieldList, new FieldList);
+        $result = $this->controller->updateCartItems($input, $form, new SS_HTTPRequest('POST', '/'));
+
+        $this->assertContains('Maximum of 3 documents exceeded for "Doc3"', $form->Message());
+        $this->assertContains('Maximum of 2 documents exceeded for "Doc5"', $form->Message());
     }
 
     /**
