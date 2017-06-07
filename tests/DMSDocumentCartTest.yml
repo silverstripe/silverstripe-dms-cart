@@ -20,3 +20,8 @@ DMSDocument:
     Filename: Doc4
     Title: Doc4
     AllowedInCart: 0
+  very_limited_supply:
+    Filename: Doc5
+    Title: Doc5
+    AllowedInCart: 1
+    MaximumCartQuantity: 2
