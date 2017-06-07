@@ -41,7 +41,28 @@ class DMSDocumentCart extends ViewableData
      */
     public function getItems()
     {
-        return ArrayList::create($this->backend->getItems());
+        $validItems = ArrayList::create();
+        foreach ($this->backend->getItems() as $item) {
+            /** @var DMSRequestItem $item */
+            if (!$item->getDocument()) {
+                $this->backend->removeItem($item);
+                continue;
+            }
+            $validItems->push($item);
+        }
+        return $validItems;
+    }
+
+    /**
+     * Gets a partial caching key that can be used to prevent the getItems method from hitting the database every
+     * time to check whether a document exists. Includes a hash of the valid items in the cart (including their
+     * quantity).
+     *
+     * @return string
+     */
+    public function getCartSummaryCacheKey()
+    {
+        return 'dms-cart-items-' . md5(serialize($this->getItems()));
     }
 
     /**

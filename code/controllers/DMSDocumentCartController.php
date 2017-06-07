@@ -208,9 +208,9 @@ class DMSDocumentCartController extends DMSCartAbstractController
                 if (!is_numeric($quantity) || $quantity < 0) {
                     continue;
                 }
-                // Only update if quantity has changed
+                // Only update if the document is valid and the quantity has changed
                 $item = $this->getCart()->getItem($itemID);
-                if ($item->getQuantity() == $quantity) {
+                if (!$item || $item->getQuantity() == $quantity) {
                     continue;
                 }
                 // No validate item

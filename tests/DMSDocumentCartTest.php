@@ -30,7 +30,7 @@ class DMSDocumentCartTest extends SapphireTest
     public function testAddItem()
     {
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
+
         $item = DMSRequestItem::create();
         $item->setDocument($doc)->setQuantity(2);
         $this->cart->addItem($item);
@@ -40,7 +40,7 @@ class DMSDocumentCartTest extends SapphireTest
     public function testEmptyCart()
     {
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
+
         $item = DMSRequestItem::create();
         $item->setDocument($doc)->setQuantity(18);
         $this->cart->addItem($item);
@@ -52,8 +52,7 @@ class DMSDocumentCartTest extends SapphireTest
 
     public function testGetBackend()
     {
-        /** @var DMSDocumentCart $cart */
-        $this->assertEquals('DMSSessionBackend', get_class($this->cart->getBackend()));
+        $this->assertInstanceOf('DMSSessionBackend', $this->cart->getBackend());
     }
 
     public function testGetBackURL()
@@ -66,7 +65,7 @@ class DMSDocumentCartTest extends SapphireTest
     public function testGetItem()
     {
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
+
         $item = DMSRequestItem::create();
         $item->setDocument($doc)->setQuantity(2);
         $this->cart->addItem($item);
@@ -76,12 +75,18 @@ class DMSDocumentCartTest extends SapphireTest
 
     public function testGetItems()
     {
-        $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
         $item = DMSRequestItem::create();
-        $item->setDocument($doc)->setQuantity(2);
+        $item->setDocument($this->objFromFixture('DMSDocument', 'doc1'))->setQuantity(2);
         $this->cart->addItem($item);
+        $this->assertCount(1, $this->cart->getItems());
 
+        $item2 = DMSRequestItem::create();
+        $item2->setDocument($this->objFromFixture('DMSDocument', 'limited_supply'))->setQuantity(2);
+        $this->cart->addItem($item2);
+        $this->assertCount(2, $this->cart->getItems());
+
+        // Edge case handling for when a document is deleted in the background
+        $item2->getDocument()->delete();
         $this->assertCount(1, $this->cart->getItems());
     }
 
@@ -96,7 +101,6 @@ class DMSDocumentCartTest extends SapphireTest
     {
         $this->assertTrue($this->cart->isCartEmpty());
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
         $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(2);
         $this->cart->addItem($item);
         $this->assertFalse($this->cart->isCartEmpty());
@@ -106,7 +110,7 @@ class DMSDocumentCartTest extends SapphireTest
     {
         $this->assertTrue($this->cart->isCartEmpty());
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
+
         $item = DMSRequestItem::create();
         $item->setDocument($doc)->setQuantity(2);
         $this->cart->addItem($item);
@@ -120,7 +124,7 @@ class DMSDocumentCartTest extends SapphireTest
     {
         $this->assertTrue($this->cart->isCartEmpty());
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
+
         $item = DMSRequestItem::create();
         $item->setDocument($doc)->setQuantity(2);
         $this->cart->addItem($item);
@@ -135,7 +139,6 @@ class DMSDocumentCartTest extends SapphireTest
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
 
         // Test Update
-        /** @var DMSRequestItem $item */
         $item = DMSRequestItem::create();
         $item->setDocument($doc)->setQuantity(2);
         $this->cart->addItem($item);
@@ -159,11 +162,12 @@ class DMSDocumentCartTest extends SapphireTest
 
     public function testSaveSubmission()
     {
-        /** @var DMSCheckoutController $controller */
         $controller = DMSCheckoutController::create();
+
         // Form for use later
         $form = $controller->DMSDocumentRequestForm();
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
+
         // Add some an item to the cart to assert later that its empty
         $item = DMSRequestItem::create($doc)->setQuantity(15);
         $controller->getCart()->addItem($item);
@@ -177,10 +181,24 @@ class DMSDocumentCartTest extends SapphireTest
     public function testIsInCart()
     {
         $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
         $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(2);
         $this->assertFalse($this->cart->isInCart($item->getItemId()));
+
         $this->cart->addItem($item);
         $this->assertTrue($this->cart->isInCart($item->getItemId()));
+    }
+
+    /**
+     * Ensure that the cart contents are hashed an used for the cart summary cache key
+     */
+    public function testGetCartSummaryCacheKey()
+    {
+        $item = DMSRequestItem::create($this->objFromFixture('DMSDocument', 'doc1'))->setQuantity(2);
+        $item2 = DMSRequestItem::create($this->objFromFixture('DMSDocument', 'limited_supply'))->setQuantity(2);
+
+        $this->cart->addItem($item)->addItem($item2);
+
+        $hash = md5(serialize($this->cart->getItems()));
+        $this->assertContains($hash, $this->cart->getCartSummaryCacheKey());
     }
 }
