@@ -205,14 +205,22 @@ class DMSDocumentCartController extends DMSCartAbstractController
         $errors = array();
         if (!empty($data['ItemQuantity'])) {
             foreach ($data['ItemQuantity'] as $itemID => $quantity) {
-                if (!is_numeric($quantity) || $quantity < 0) {
+                if (!is_numeric($quantity)) {
                     continue;
                 }
-                // Only update if the document is valid and the quantity has changed
                 $item = $this->getCart()->getItem($itemID);
+
+                // Only update if the item exists and the quantity has changed
                 if (!$item || $item->getQuantity() == $quantity) {
                     continue;
                 }
+
+                // If zero or less, remove the item
+                if ($quantity <= 0) {
+                    $this->getCart()->removeItem($item);
+                    continue;
+                }
+
                 // No validate item
                 $validate = $this->validateAddRequest($quantity, $item->getDocument());
                 if ($validate->valid()) {
@@ -247,7 +255,7 @@ class DMSDocumentCartController extends DMSCartAbstractController
             ->customise(
                 array(
                 'Form'  => $form,
-                'Title' => _t(__CLASS__ . '.UPDATE_TITLE', 'Updating cart items')
+                'Title' => _t('DMSDocumentCartController.UPDATE_TITLE', 'Updating cart items')
                 )
             );
     }
