@@ -262,15 +262,17 @@ class DMSDocumentCart extends ViewableData
         $submission = DMSDocumentCartSubmission::create();
         $form->saveInto($submission);
         $return = $submission->write();
-        $this->getItems()->each(function ($row) use ($submission) {
-            $values = array(
-                'Quantity' => $row->getQuantity(),
-                'DocumentID' => $row->getDocument()->ID,
-            );
-            $submissionItem = DMSDocumentCartSubmissionItem::create($values);
+        $this->getItems()->each(function ($item) use ($submission) {
+            /** @var DMSDocument $document */
+            $document = $item->getDocument();
+            $submissionItem = DMSDocumentCartSubmissionItem::create(array(
+                'OriginalID' => $document->ID,
+                'Quantity' => $item->getQuantity(),
+                'Title' => $document->getTitle(),
+                'Filename' => $document->getFilenameWithoutID()
+            ));
             $submission->Items()->add($submissionItem);
-
-            $row->getDocument()->incrementPrintRequest();
+            $document->incrementPrintRequest();
         });
 
         return $return;
