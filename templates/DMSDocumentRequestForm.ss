@@ -25,6 +25,8 @@
             <% end_loop %>
         </div>
     <% end_if %>
+<% else %>
+    <p class="dms-cart-empty"><%t DMSDocumentCart.EMPTY_CART "Your cart is currently empty." %></p>
 <% end_if %>
 <% if $IncludeFormTag %>
     </form>

@@ -23,6 +23,7 @@ class DMSDocumentCartControllerTest extends FunctionalTest
         DMSDocumentCartController::add_extension('StubDMSDocumentCheckoutPageExtension');
         $this->controller = DMSDocumentCartController::create();
         $this->cart = $this->controller->getCart();
+        $this->cart->emptyCart();
     }
 
     /**
@@ -203,44 +204,48 @@ class DMSDocumentCartControllerTest extends FunctionalTest
 
     /**
      * Tests whether the cart items are updated from the controller
+     *
+     * @param array $quantity
+     * @param int|string $expectedCount
+     * @dataProvider updateCartItemsProvider
      */
-    public function testUpdateCartItems()
+    public function testUpdateCartItems($quantity, $expectedCount)
     {
-        $doc = $this->objFromFixture('DMSDocument', 'doc1');
-        /** @var DMSRequestItem $item */
-        $item = DMSRequestItem::create()->setDocument($doc)->setQuantity(2);
+        $document = $this->objFromFixture('DMSDocument', 'doc1');
+        $item = DMSRequestItem::create()->setDocument($document)->setQuantity(2);
         $this->cart->addItem($item);
 
-        $invalidQuantities = array(
-            'ItemQuantity' => array($doc->ID => 'non-numeric')
-        );
+        $quantities = array('ItemQuantity' => array($document->ID => $quantity));
 
-        $sameQuantities = array(
-            'ItemQuantity' => array($doc->ID => 2)
-        );
-
-        $updatedQuantities = array(
-            'ItemQuantity' => array($doc->ID => 5),
-        );
-        $form = Form::create(
-            $this->controller,
-            'Test',
-            FieldList::create(),
-            FieldList::create()
-        );
+        $form = Form::create($this->controller, 'Test', FieldList::create(), FieldList::create());
         $request = new SS_HTTPRequest('POST', '');
-        // Test invalids leave it unchanged
-        $response = $this->controller->updateCartItems($invalidQuantities, $form, $request);
-        $this->assertEquals(2, $this->cart->getItem($item->getItemId())->getQuantity());
+        $response = $this->controller->updateCartItems($quantities, $form, $request);
 
-        // Test quantity remains the same
-        $response->removeHeader('Location');
-        $response =$this->controller->updateCartItems($sameQuantities, $form, $request);
-        $this->assertEquals(2, $this->cart->getItem($item->getItemId())->getQuantity());
+        $item = $this->cart->getItem($item->getItemId());
+        if (is_numeric($quantity) && $quantity <= 0) {
+            $this->assertFalse($item);
+        } else {
+            $this->assertEquals($expectedCount, $item->getQuantity());
+        }
+    }
 
-        $response->removeHeader('Location');
-        $response = $this->controller->updateCartItems($updatedQuantities, $form, $request);
-        $this->assertEquals(5, $this->cart->getItem($item->getItemId())->getQuantity());
+    /**
+     * @return array[]
+     */
+    public function updateCartItemsProvider()
+    {
+        return array(
+            // Invalid quantity, leave it unchanged
+            array('non-numeric', 2),
+            // Existing quantity remains the same
+            array(2, 2),
+            // Valid quantity increase
+            array(5, 5),
+            // Zero, remove it
+            array(0, 0),
+            // Negative, treat as zero
+            array(-10, 0)
+        );
     }
 
     /**
@@ -282,5 +287,14 @@ class DMSDocumentCartControllerTest extends FunctionalTest
     {
         $this->assertSame('documentcart', $this->controller->Link());
         $this->assertSame('documentcart/view', $this->controller->Link('view'));
+    }
+
+    /**
+     * Ensure that the user is notified when the cart is empty
+     */
+    public function testEmptyCartShowsNoticeOnCheckout()
+    {
+        $result = $this->get('checkout');
+        $this->assertContains('Your cart is currently empty.', $result->getBody());
     }
 }
