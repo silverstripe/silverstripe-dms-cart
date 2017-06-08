@@ -65,8 +65,9 @@ class DMSCheckoutController extends DMSCartAbstractController
         $fields->replaceField('DeliveryAddressLine2', TextField::create('DeliveryAddressLine2', ''));
         $fields->replaceField('DeliveryAddressCountry', CountryDropdownField::create(
             'DeliveryAddressCountry',
-            _t(__CLASS__ . '.RECEIVER_COUNTRY', 'Country')
+            _t('DMSCheckoutController.RECEIVER_COUNTRY', 'Country')
         )->setValue('NZ'));
+        $fields->removeByName('CreatedAt');
 
         $requiredFields = array(
             'ReceiverName',
@@ -85,7 +86,7 @@ class DMSCheckoutController extends DMSCartAbstractController
         $actions = FieldList::create(
             FormAction::create(
                 'doRequestSend',
-                _t(__CLASS__ . '.SEND_ACTION', 'Send your request')
+                _t('DMSCheckoutController.SEND_ACTION', 'Send your request')
             )
         );
 
@@ -123,7 +124,7 @@ class DMSCheckoutController extends DMSCartAbstractController
         $email = Email::create(
             $from,
             $emailAddress,
-            _t(__CLASS__ . '.EMAIL_SUBJECT', 'Request for Printed Publications')
+            _t('DMSCheckoutController.EMAIL_SUBJECT', 'Request for Printed Publications')
         );
 
         if ($bcc = $this->getConfirmationBcc()) {
@@ -134,7 +135,7 @@ class DMSCheckoutController extends DMSCartAbstractController
         $body = sprintf(
             '<p>%s</p>',
             _t(
-                __CLASS__ . '.EMAIL_BODY',
+                'DMSCheckoutController.EMAIL_BODY',
                 'A request for printed publications has been submitted with the following details:'
             )
         );

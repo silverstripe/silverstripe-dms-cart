@@ -10,6 +10,7 @@ class DMSDocumentCartSubmission extends DataObject
         'DeliveryAddressLine2'    => 'Varchar(200)',
         'DeliveryAddressCountry'  => 'Varchar(50)',
         'DeliveryAddressPostCode' => 'Varchar(20)',
+        'CreatedAt'               => 'Datetime',
     );
 
     private static $has_many = array(
@@ -20,7 +21,8 @@ class DMSDocumentCartSubmission extends DataObject
         'ReceiverName' => 'Receiver Name',
         'ReceiverPhone' => 'Receiver Phone',
         'ReceiverEmail' => 'Receiver Email',
-        'Items.Count' => 'No. Items'
+        'Items.Count' => 'No. Items',
+        'CreatedAt.Nice' => 'Created At'
     );
 
     private static $singular_name = 'Cart Submission';
@@ -34,15 +36,32 @@ class DMSDocumentCartSubmission extends DataObject
      */
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
+        // PHP 5.3 support
+        $self = $this;
+        $this->beforeUpdateCMSFields(function (FieldList $fields) use ($self) {
+            $fields->addFieldToTab(
+                'Root.Main',
+                $fields->fieldByName('Root.Main.CreatedAt')->performReadonlyTransformation()
+            );
 
-        $gridField = GridField::create('Items', null, $this->Items(), $config = new GridFieldConfig_RecordEditor);
-        $fields->addFieldToTab('Root.Items', $gridField);
+            $gridField = GridField::create('Items', null, $self->Items(), $config = new GridFieldConfig_RecordEditor);
+            $fields->addFieldToTab('Root.Items', $gridField);
 
-        foreach (array('GridFieldAddExistingAutocompleter', 'GridFieldAddNewButton') as $component) {
-            $config->removeComponentsByType($component);
+            foreach (array('GridFieldAddExistingAutocompleter', 'GridFieldAddNewButton') as $component) {
+                $config->removeComponentsByType($component);
+            }
+        });
+        return parent::getCMSFields();
+    }
+
+    /**
+     * Set the created at datetime if it hasn't been set already
+     */
+    public function onBeforeWrite()
+    {
+        if (!$this->CreatedAt) {
+            $this->CreatedAt = SS_Datetime::now();
         }
-
-        return $fields;
+        return parent::onBeforeWrite();
     }
 }

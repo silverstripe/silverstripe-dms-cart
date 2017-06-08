@@ -4,7 +4,7 @@
         <thead>
         <tr>
             <th colspan="2">
-                <%t DMSCart.DELIVERY_INFORMATION "Delivery Information" %>
+                <%t DMSDocumentCartSubmission.DELIVERY_INFORMATION "Delivery Information" %>
             </th>
         </tr>
         </thead>
@@ -12,25 +12,25 @@
             <% with $ReceiverInfoNice %>
             <tr>
                 <td>
-                    <%t DMSCart.RECEIVER_NAME "Name" %>
+                    <%t DMSDocumentCartSubmission.RECEIVER_NAME "Name" %>
                 </td>
                 <td>$ReceiverName.XML</td>
             </tr>
             <tr>
                 <td>
-                    <%t DMSCart.RECEIVER_PHONE "Phone" %>
+                    <%t DMSDocumentCartSubmission.RECEIVER_PHONE "Phone" %>
                 </td>
                 <td>$ReceiverPhone.XML</td>
             </tr>
             <tr>
                 <td>
-                    <%t DMSCart.RECEIVER_EMAIL "Email" %>
+                    <%t DMSDocumentCartSubmission.RECEIVER_EMAIL "Email" %>
                 </td>
                 <td>$ReceiverEmail.XML</td>
             </tr>
             <tr>
                 <td>
-                    <%t DMSCart.RECEIVER_ADDRESS "Shipping Address" %>
+                    <%t DMSDocumentCartSubmission.RECEIVER_ADDRESS "Shipping Address" %>
                 </td>
                 <td>
                     $DeliveryAddressLine1.XML<br/>

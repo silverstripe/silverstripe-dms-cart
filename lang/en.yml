@@ -20,3 +20,5 @@ en:
     EMAIL_SUBJECT: Request for Printed Publications
     RECEIVER_COUNTRY: Country
     SEND_ACTION: Send your request
+  DMSDocumentCartSubmissionItem:
+    ORIGINALIDHELPTIP: 'Note: The original document may have been modified or removed since this request was made.'
