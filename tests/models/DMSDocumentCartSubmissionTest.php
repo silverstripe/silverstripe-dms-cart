@@ -19,25 +19,13 @@ class DMSDocumentCartSubmissionTest extends SapphireTest
     }
 
     /**
-     * Ensure that a "created at" date is set when a record is created
+     * Ensure that the "created" field is readonly in the CMS
      */
-    public function testCreatedAtIsSetOnWrite()
-    {
-        $submission = DMSDocumentCartSubmission::create();
-        $this->assertNull($submission->CreatedAt);
-
-        $submission->write();
-        $this->assertNotNull($submission->CreatedAt);
-    }
-
-    /**
-     * Ensure that the scaffolded "created at" is readonly in the CMS
-     */
-    public function testCreatedAtIsReadonly()
+    public function testCreatedFieldIsReadonly()
     {
         $submission = DMSDocumentCartSubmission::create();
         $submission->write();
         $fields = $submission->getCMSFields();
-        $this->assertInstanceOf('DatetimeField_Readonly', $fields->fieldByName('Root.Main.CreatedAt'));
+        $this->assertInstanceOf('ReadonlyField', $fields->fieldByName('Root.Main.Created'));
     }
 }

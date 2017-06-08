@@ -67,7 +67,6 @@ class DMSCheckoutController extends DMSCartAbstractController
             'DeliveryAddressCountry',
             _t('DMSCheckoutController.RECEIVER_COUNTRY', 'Country')
         )->setValue('NZ'));
-        $fields->removeByName('CreatedAt');
 
         $requiredFields = array(
             'ReceiverName',
