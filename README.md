@@ -1,6 +1,6 @@
 # Document Cart Module
 
-[![Build Status](https://travis-ci.org/creative-commoners/silverstripe-dms-cart.svg?branch=master)](https://travis-ci.org/creative-commoners/silverstripe-dms-cart) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/creative-commoners/silverstripe-dms-cart/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/creative-commoners/silverstripe-dms-cart/?branch=master) [![codecov](https://codecov.io/gh/creative-commoners/silverstripe-dms-cart/branch/master/graph/badge.svg)](https://codecov.io/gh/creative-commoners/silverstripe-dms-cart)
+[![Build Status](https://travis-ci.org/silverstripe/silverstripe-dms-cart.svg?branch=master)](https://travis-ci.org/silverstripe/silverstripe-dms-cart) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/silverstripe/silverstripe-dms-cart/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/silverstripe/silverstripe-dms-cart/?branch=master) [![codecov](https://codecov.io/gh/silverstripe/silverstripe-dms-cart/branch/master/graph/badge.svg)](https://codecov.io/gh/silverstripe/silverstripe-dms-cart)
 
 ## Overview
 
@@ -30,7 +30,7 @@ third party translation interface, transifex.com.
 Newly added strings will be periodically uploaded there for translation,
 and any new translations will be merged back to the project source code.
 
-Please use [https://www.transifex.com/projects/p/silverstripe-dms/](https://www.transifex.com/projects/p/silverstripe-dms-cart/) to contribute translations,
+Please use [https://www.transifex.com/silverstripe/silverstripe-dms-cart](https://www.transifex.com/silverstripe/silverstripe-dms-cart) to contribute translations,
 rather than sending pull requests with YAML files.
 
 See the ["i18n" topic](http://doc.silverstripe.org/framework/en/3/topics/i18n) on docs.silverstripe.org for more details.
