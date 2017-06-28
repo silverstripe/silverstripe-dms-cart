@@ -3,14 +3,8 @@
   "description": "Adds a cart extension to the DMS module, enabling documents to be checked out for distribution",
   "type": "silverstripe-module",
   "require": {
-    "silverstripe/dms": "2.0.x-dev"
+    "silverstripe/dms": "^2.0"
   },
   "license": "BSD-3-Clause",
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  "extra": []
 }
